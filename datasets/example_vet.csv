@@ -1,6 +1,7 @@
 Caballo_ID,Nombre,Raza,Sexo,Edad,Comentarios_generales,LRMD,LRMI,CMD,CMI,PFLRMD,PFLRMI,PFCMD,PFCMI
-001,Sabrina,Warmblood,Hembra,5,,1,2,0,1,2,1,0,0
-002,Farro,Warmblood,Macho,20,,3,3,1,0,0,0,1,2
-003,Nobless,Warmblood,Macho,30,,2,2,2,2,2,2,2,2
-004,Julie,Especial,Hembra,5,,1,0,1,2,1,0,1,1
-005,Zorro,Frison,Macho,3,,0,1,1,1,1,1,0,1
+1,Sabrina,Warmblood,Hembra,5,,1,2,0,1,2,1,0,0
+2,Farro,Warmblood,Macho,20,,3,3,1,0,0,0,1,2
+3,Nobless,Warmblood,Macho,30,,2,2,2,2,2,2,2,2
+4,Julie,Especial,Hembra,5,,1,0,1,2,1,0,1,1
+5,Zorro,Frison,Macho,3,,0,1,1,1,1,1,0,1
+6,Marcus,Criollo,Macho,8,,0,0,0,0,0,0,0,0
