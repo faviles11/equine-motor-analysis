@@ -65,13 +65,14 @@ if submit_vet:
         sha=file.sha,
         branch="main"
     )
+    with open(os.path.join(repo_root, "datasets", "example_vet.csv"), "w", encoding="utf-8") as f:
+        f.write(csv_text)
+
+    st.cache_data.clear()
+    st.rerun()    
+
     # data loaded
     st.success(f"✅ Registro Veterinario {caballo_id} agregado en base de datos")
-
-    # testing remote load
-    st.experimental_rerun()   
-
-
 
 
 # data for ai model results
@@ -118,7 +119,10 @@ if submit_mod:
         sha=file.sha,
         branch="main"
     )
-    st.success(f"✅ Registro AI {caballo_id_m} agregado en base de datos") 
+    with open(os.path.join(repo_root, "datasets", "example_modelai.csv"), "w", encoding="utf-8") as f:
+        f.write(csv_text)
 
-    # testing remote load
-    st.experimental_rerun()     
+    st.cache_data.clear()
+    st.rerun()    
+
+    st.success(f"✅ Registro AI {caballo_id_m} agregado en base de datos")      
