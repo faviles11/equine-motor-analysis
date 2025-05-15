@@ -1,10 +1,5 @@
-Caballo_ID,Nombre,Raza,Sexo,Edad,Comentarios_generales,LRMD,LRMI,CMD,CMI,PFLRMD,PFLRMI,PFCMD,PFCMI
-1,Sabrina,Warmblood,Hembra,5,,1,2,0,1,2,1,0,0
-2,Farro,Warmblood,Macho,20,,3,3,1,0,0,0,1,2
-3,Nobless,Warmblood,Macho,30,,2,2,2,2,2,2,2,2
-4,Julie,Especial,Hembra,5,,1,0,1,2,1,0,1,1
-5,Zorro,Frison,Macho,3,,0,1,1,1,1,1,0,1
-6,Marcus,Criollo,Macho,8,,0,0,0,0,0,0,0,0
-7,Farro,Warmblood,Macho,0,,1,0,2,1,0,0,1,0
-8,Palmeño,Español,Macho,13,,0,0,0,0,1,0,1,1
-9,Felino,Español,Macho,4,,0,0,0,0,0,0,0,0
+Caballo_ID,Nombre,Raza,Sexo,Edad,Comentarios_generales,
+Cabeza_LRMD,Cabeza_LRMI,Cabeza_CMD,Cabeza_CMI,Cabeza_PFLRMD,Cabeza_PFLRMI,Cabeza_PFCMD,Cabeza_PFCMI,
+Pelvis_LRMD,Pelvis_LRMI,Pelvis_CMD,Pelvis_CMI,Pelvis_PFLRMD,Pelvis_PFLRMI,Pelvis_PFCMD,Pelvis_PFCMI
+001,Sabrina,Warmblood,Hembra,5,,1,2,0,1,2,1,0,0,  2,1,1,0,1,0,1,1
+002,Farro,Warmblood,Macho,20,,3,3,1,0,0,0,1,2,  3,2,1,1,2,1,0,2

@@ -15,6 +15,7 @@ st.set_page_config(page_title="Análisis Motor Equino", layout="wide")
 
 st.title("Plataforma de Análisis Motor Equino")
 
+# show data in table
 st.subheader("Datos del Dr. Veterinario")
 df_vet = load_data("datasets/example_vet.csv")
 st.dataframe(df_vet)
@@ -24,106 +25,153 @@ df_model = load_data("datasets/example_modelai.csv")
 st.dataframe(df_model)
 
 st.markdown("---")
-st.subheader("Añadir Registro Veterinario")
 
-with st.form("form_vet"):
-    caballo_id = st.text_input("Caballo_ID")
-    nombre     = st.text_input("Nombre")
-    raza       = st.text_input("Raza")
-    sexo       = st.selectbox("Sexo", ["Macho","Hembra"])
-    edad       = st.number_input("Edad", min_value=0, step=1)
-    lrmd       = st.selectbox("LRMD", [0,1,2,3])
-    lrmi       = st.selectbox("LRMI", [0,1,2,3])
-    cmd        = st.selectbox("CMD",  [0,1,2,3])
-    cmi        = st.selectbox("CMI",  [0,1,2,3])
-    pflrmd     = st.selectbox("PFLRMD",[0,1,2,3])
-    pflrmi     = st.selectbox("PFLRMI",[0,1,2,3])
-    pfcmd      = st.selectbox("PFCMD",[0,1,2,3])
-    pfcmi      = st.selectbox("PFCMI",[0,1,2,3])
-    submit_vet = st.form_submit_button("Guardar en base de datos")
+# buttons for forms
+if "show_vet"   not in st.session_state: st.session_state.show_vet   = False
+if "show_mod"   not in st.session_state: st.session_state.show_mod   = False
 
-# data for vet results
-if submit_vet:
-    # store in csv
-    df = load_data("datasets/example_vet.csv")
-    new_row = {
-        "Caballo_ID": caballo_id, "Nombre": nombre, "Raza": raza,
-        "Sexo": sexo, "Edad": edad, "Comentarios_generales": "",
-        "LRMD": lrmd, "LRMI": lrmi, "CMD": cmd, "CMI": cmi,
-        "PFLRMD": pflrmd, "PFLRMI": pflrmi, "PFCMD": pfcmd, "PFCMI": pfcmi
-    }
-    df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
-    csv_text = df.to_csv(index=False)
+col1_btn, col2_btn = st.columns(2)
+with col1_btn:
+    if st.button("➕ Agregar registro Veterinario"):
+        st.session_state.show_vet = not st.session_state.show_vet
+with col2_btn:
+    if st.button("➕ Agregar registro Modelo AI"):
+        st.session_state.show_mod = not st.session_state.show_mod
 
-    # commit in gh
-    gh_repo = Github(st.secrets["github"]["token"]) \
-              .get_repo("faviles11/equine-motor-analysis")
-    file = gh_repo.get_contents("datasets/example_vet.csv", ref="main")
-    gh_repo.update_file(
-        path=file.path,
-        message=f"chore: añade registro VET {caballo_id}",
-        content=csv_text,
-        sha=file.sha,
-        branch="main"
-    )
-    with open(os.path.join(repo_root, "datasets", "example_vet.csv"), "w", encoding="utf-8") as f:
-        f.write(csv_text)
+# vet form
+if st.session_state.show_vet:
+    st.markdown("## Formulario: Veterinario")
+    with st.form("form_vet"):
+        nombre     = st.text_input("Nombre")
+        raza       = st.text_input("Raza")
+        sexo       = st.selectbox("Sexo", ["Macho","Hembra"])
+        edad       = st.number_input("Edad", min_value=0, step=1)
 
-    st.cache_data.clear()
-    st.rerun()    
+        st.markdown("**Asimetría vertical de Cabeza**")
+        cabeza_lrmd   = st.selectbox("Cabeza_LRMD",   [0,1,2,3])
+        cabeza_lrmi   = st.selectbox("Cabeza_LRMI",   [0,1,2,3])
+        cabeza_cmd    = st.selectbox("Cabeza_CMD",    [0,1,2,3])
+        cabeza_cmi    = st.selectbox("Cabeza_CMI",    [0,1,2,3])
+        cabeza_pflrmd = st.selectbox("Cabeza_PFLRMD", [0,1,2,3])
+        cabeza_pflrmi = st.selectbox("Cabeza_PFLRMI", [0,1,2,3])
+        cabeza_pfcmd  = st.selectbox("Cabeza_PFCMD",  [0,1,2,3])
+        cabeza_pfcmi  = st.selectbox("Cabeza_PFCMI",  [0,1,2,3])
 
-    # data loaded
-    st.success(f"✅ Registro Veterinario {caballo_id} agregado en base de datos")
+        st.markdown("**Asimetría vertical de Pelvis**")
+        pelvis_lrmd   = st.selectbox("Pelvis_LRMD",   [0,1,2,3])
+        pelvis_lrmi   = st.selectbox("Pelvis_LRMI",   [0,1,2,3])
+        pelvis_cmd    = st.selectbox("Pelvis_CMD",    [0,1,2,3])
+        pelvis_cmi    = st.selectbox("Pelvis_CMI",    [0,1,2,3])
+        pelvis_pflrmd = st.selectbox("Pelvis_PFLRMD", [0,1,2,3])
+        pelvis_pflrmi = st.selectbox("Pelvis_PFLRMI", [0,1,2,3])
+        pelvis_pfcmd  = st.selectbox("Pelvis_PFCMD",  [0,1,2,3])
+        pelvis_pfcmi  = st.selectbox("Pelvis_PFCMI",  [0,1,2,3])
 
+        submit_vet = st.form_submit_button("Guardar Vet")
 
-# data for ai model results
-st.markdown("---")
-st.subheader("Añadir Registro Modelo AI")
+    if submit_vet:
+        df = load_data("datasets/example_vet.csv")
+        new_id = str(len(df) + 1).zfill(3)
+        new_row = {
+            "Caballo_ID": new_id, "Nombre": nombre, "Raza": raza,
+            "Sexo": sexo, "Edad": edad, "Comentarios_generales": "",
+            # head
+            "Cabeza_LRMD": cabeza_lrmd,   "Cabeza_LRMI": cabeza_lrmi,
+            "Cabeza_CMD": cabeza_cmd,     "Cabeza_CMI": cabeza_cmi,
+            "Cabeza_PFLRMD": cabeza_pflrmd, "Cabeza_PFLRMI": cabeza_pflrmi,
+            "Cabeza_PFCMD": cabeza_pfcmd, "Cabeza_PFCMI": cabeza_pfcmi,
+            # pelvis
+            "Pelvis_LRMD": pelvis_lrmd,   "Pelvis_LRMI": pelvis_lrmi,
+            "Pelvis_CMD": pelvis_cmd,     "Pelvis_CMI": pelvis_cmi,
+            "Pelvis_PFLRMD": pelvis_pflrmd, "Pelvis_PFLRMI": pelvis_pflrmi,
+            "Pelvis_PFCMD": pelvis_pfcmd, "Pelvis_PFCMI": pelvis_pfcmi,
+        }
+        df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
+        csv_text = df.to_csv(index=False)
 
-with st.form("form_model"):
-    # mismos campos de metadatos + resultados
-    caballo_id_m = st.text_input("Caballo_ID", key="m_id")
-    nombre_m     = st.text_input("Nombre", key="m_nombre")
-    raza_m       = st.text_input("Raza", key="m_raza")
-    sexo_m       = st.selectbox("Sexo", ["Macho","Hembra"], key="m_sexo")
-    edad_m       = st.number_input("Edad", min_value=0, step=1, key="m_edad")
-    lrmd_m       = st.selectbox("LRMD", [0,1,2,3], key="m_lrmd")
-    lrmi_m       = st.selectbox("LRMI", [0,1,2,3], key="m_lrmi")
-    cmd_m        = st.selectbox("CMD",  [0,1,2,3], key="m_cmd")
-    cmi_m        = st.selectbox("CMI",  [0,1,2,3], key="m_cmi")
-    pflrmd_m     = st.selectbox("PFLRMD",[0,1,2,3], key="m_pflrmd")
-    pflrmi_m     = st.selectbox("PFLRMI",[0,1,2,3], key="m_pflrmi")
-    pfcmd_m      = st.selectbox("PFCMD",[0,1,2,3], key="m_pfcmd")
-    pfcmi_m      = st.selectbox("PFCMI",[0,1,2,3], key="m_pfcmi")
-    submit_mod   = st.form_submit_button("Guardar en base de datos")
+        gh = Github(st.secrets["github"]["token"])
+        repo = gh.get_repo("faviles11/equine-motor-analysis")
+        f   = repo.get_contents("datasets/example_vet.csv", ref="main")
+        repo.update_file(path=f.path, message=f"chore: añade registro VET {nombre}",
+                         content=csv_text, sha=f.sha, branch="main")
+        with open(os.path.join(repo_root, "datasets", "example_vet.csv"), "w", encoding="utf-8") as fo:
+            fo.write(csv_text)
 
-if submit_mod:
-    # store in csv
-    df = load_data("datasets/example_modelai.csv")
-    new_row = {
-        "Caballo_ID": caballo_id_m, "Nombre": nombre_m, "Raza": raza_m,
-        "Sexo": sexo_m, "Edad": edad_m, "Comentarios_generales": "",
-        "LRMD": lrmd_m, "LRMI": lrmi_m, "CMD": cmd_m, "CMI": cmi_m,
-        "PFLRMD": pflrmd_m, "PFLRMI": pflrmi_m, "PFCMD": pfcmd_m, "PFCMI": pfcmi_m
-    }
-    df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
-    csv_text = df.to_csv(index=False)
+        st.success("✅ Veterinario guardado")
+        st.cache_data.clear()
+        st.rerun()
 
-    # commit in gh
-    gh_repo = Github(st.secrets["github"]["token"]) \
-              .get_repo("faviles11/equine-motor-analysis")
-    file = gh_repo.get_contents("datasets/example_modelai.csv", ref="main")
-    gh_repo.update_file(
-        path=file.path,
-        message=f"chore: añade registro AI {caballo_id_m}",
-        content=csv_text,
-        sha=file.sha,
-        branch="main"
-    )
-    with open(os.path.join(repo_root, "datasets", "example_modelai.csv"), "w", encoding="utf-8") as f:
-        f.write(csv_text)
+# ai form
+if st.session_state.show_mod:
+    st.markdown("## Formulario: Modelo AI")
+    with st.form("form_mod"):
+        nombre_m     = st.text_input("Nombre",    key="m_nombre")
+        raza_m       = st.text_input("Raza",      key="m_raza")
+        sexo_m       = st.selectbox("Sexo", ["Macho","Hembra"], key="m_sexo")
+        edad_m       = st.number_input("Edad", min_value=0, step=1, key="m_edad")
 
-    st.cache_data.clear()
-    st.rerun()    
+        st.markdown("**Asimetría vertical de Cabeza**")
+        cabeza_lrmd_m   = st.selectbox("Cabeza_LRMD",   [0,1,2,3], key="m_cabeza_lrmd")
+        cabeza_lrmi_m   = st.selectbox("Cabeza_LRMI",   [0,1,2,3], key="m_cabeza_lrmi")
+        cabeza_cmd_m    = st.selectbox("Cabeza_CMD",    [0,1,2,3], key="m_cabeza_cmd")
+        cabeza_cmi_m    = st.selectbox("Cabeza_CMI",    [0,1,2,3], key="m_cabeza_cmi")
+        cabeza_pflrmd_m = st.selectbox("Cabeza_PFLRMD", [0,1,2,3], key="m_cabeza_pflrmd")
+        cabeza_pflrmi_m = st.selectbox("Cabeza_PFLRMI", [0,1,2,3], key="m_cabeza_pflrmi")
+        cabeza_pfcmd_m  = st.selectbox("Cabeza_PFCMD",  [0,1,2,3], key="m_cabeza_pfcmd")
+        cabeza_pfcmi_m  = st.selectbox("Cabeza_PFCMI",  [0,1,2,3], key="m_cabeza_pfcmi")
 
-    st.success(f"✅ Registro AI {caballo_id_m} agregado en base de datos")      
+        st.markdown("**Asimetría vertical de Pelvis**")
+        pelvis_lrmd_m   = st.selectbox("Pelvis_LRMD",   [0,1,2,3], key="m_pelvis_lrmd")
+        pelvis_lrmi_m   = st.selectbox("Pelvis_LRMI",   [0,1,2,3], key="m_pelvis_lrmi")
+        pelvis_cmd_m    = st.selectbox("Pelvis_CMD",    [0,1,2,3], key="m_pelvis_cmd")
+        pelvis_cmi_m    = st.selectbox("Pelvis_CMI",    [0,1,2,3], key="m_pelvis_cmi")
+        pelvis_pflrmd_m = st.selectbox("Pelvis_PFLRMD", [0,1,2,3], key="m_pelvis_pflrmd")
+        pelvis_pflrmi_m = st.selectbox("Pelvis_PFLRMI", [0,1,2,3], key="m_pelvis_pflrmi")
+        pelvis_pfcmd_m  = st.selectbox("Pelvis_PFCMD",  [0,1,2,3], key="m_pelvis_pfcmd")
+        pelvis_pfcmi_m  = st.selectbox("Pelvis_PFCMI",  [0,1,2,3], key="m_pelvis_pfcmi")
+
+        submit_mod = st.form_submit_button("Guardar AI")
+
+    if submit_mod:
+        df = load_data("datasets/example_modelai.csv")
+        new_id_m = str(len(df) + 1).zfill(3)
+        new_row = {
+            "Caballo_ID": new_id_m,
+            "Nombre": nombre_m,
+            "Raza": raza_m,
+            "Sexo": sexo_m,
+            "Edad": edad_m,
+            "Comentarios_generales": "",
+            # head
+            "Cabeza_LRMD": cabeza_lrmd_m,
+            "Cabeza_LRMI": cabeza_lrmi_m,
+            "Cabeza_CMD": cabeza_cmd_m,
+            "Cabeza_CMI": cabeza_cmi_m,
+            "Cabeza_PFLRMD": cabeza_pflrmd_m,
+            "Cabeza_PFLRMI": cabeza_pflrmi_m,
+            "Cabeza_PFCMD": cabeza_pfcmd_m,
+            "Cabeza_PFCMI": cabeza_pfcmi_m,
+            # pelvis
+            "Pelvis_LRMD": pelvis_lrmd_m,
+            "Pelvis_LRMI": pelvis_lrmi_m,
+            "Pelvis_CMD": pelvis_cmd_m,
+            "Pelvis_CMI": pelvis_cmi_m,
+            "Pelvis_PFLRMD": pelvis_pflrmd_m,
+            "Pelvis_PFLRMI": pelvis_pflrmi_m,
+            "Pelvis_PFCMD": pelvis_pfcmd_m,
+            "Pelvis_PFCMI": pelvis_pfcmi_m,
+        }
+        df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
+        csv_text = df.to_csv(index=False)
+
+        gh = Github(st.secrets["github"]["token"])
+        repo = gh.get_repo("faviles11/equine-motor-analysis")
+        f   = repo.get_contents("datasets/example_modelai.csv", ref="main")
+        repo.update_file(path=f.path, message=f"chore: añade registro AI {nombre_m}",
+                         content=csv_text, sha=f.sha, branch="main")
+        with open(os.path.join(repo_root, "datasets", "example_modelai.csv"), "w", encoding="utf-8") as fo:
+            fo.write(csv_text)
+
+        st.success("✅ Modelo AI guardado")
+        st.cache_data.clear()
+        st.rerun()
