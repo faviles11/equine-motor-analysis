@@ -1,10 +1,12 @@
 # app/main.py
 
 import os, sys
+
+# parent directory to python path
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 import streamlit as st
 from app.utils import load_data
-
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 st.set_page_config(page_title="Análisis Motor Equino", layout="centered")
 
