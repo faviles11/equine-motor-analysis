@@ -7,9 +7,10 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")
 
 import streamlit as st
 from github import Github
+import pandas as pd
 from app.utils import load_data
 
-st.set_page_config(page_title="Análisis Motor Equino", layout="centered")
+st.set_page_config(page_title="Análisis Motor Equino", layout="wide")
 
 st.title("Plataforma de Análisis Motor Equino")
 
@@ -68,7 +69,7 @@ if submit_vet:
         sha=file.sha,
         branch="main"
     )
-    st.success(f"✅ Registro Veterinario {caballo_id} agregado en GitHub")
+    st.success(f"✅ Registro Veterinario {caballo_id} agregado en base de datos")
 
 
 # data for ai model results
@@ -90,7 +91,7 @@ with st.form("form_model"):
     pflrmi_m     = st.selectbox("PFLRMI",[0,1,2,3], key="m_pflrmi")
     pfcmd_m      = st.selectbox("PFCMD",[0,1,2,3], key="m_pfcmd")
     pfcmi_m      = st.selectbox("PFCMI",[0,1,2,3], key="m_pfcmi")
-    submit_mod   = st.form_submit_button("Guardar en GitHub")
+    submit_mod   = st.form_submit_button("Guardar en base de datos")
 
 if submit_mod:
     # store in csv
@@ -115,4 +116,4 @@ if submit_mod:
         sha=file.sha,
         branch="main"
     )
-    st.success(f"✅ Registro AI {caballo_id_m} agregado en GitHub")    
+    st.success(f"✅ Registro AI {caballo_id_m} agregado en base de datos")    
