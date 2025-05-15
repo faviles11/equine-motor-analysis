@@ -14,17 +14,13 @@ st.set_page_config(page_title="Análisis Motor Equino", layout="wide")
 
 st.title("Plataforma de Análisis Motor Equino")
 
-col1, col2 = st.columns([1, 2])
+st.subheader("Datos del Dr. Veterinario")
+df_vet = load_data("datasets/example_vet.csv")
+st.dataframe(df_vet)
 
-with col1:
-    st.subheader("Datos del Dr. Veterinario")
-    df_vet = load_data("datasets/example_vet.csv")
-    st.dataframe(df_vet)
-
-with col2:
-    st.subheader("Datos del Modelo AI")
-    df_model = load_data("datasets/example_modelai.csv")
-    st.dataframe(df_model)        
+st.subheader("Datos del Modelo AI")
+df_model = load_data("datasets/example_modelai.csv")
+st.dataframe(df_model)
 
 st.markdown("---")
 st.subheader("Añadir Registro Veterinario")
@@ -69,7 +65,13 @@ if submit_vet:
         sha=file.sha,
         branch="main"
     )
+    # data loaded
     st.success(f"✅ Registro Veterinario {caballo_id} agregado en base de datos")
+
+    # testing remote load
+    st.experimental_rerun()   
+
+
 
 
 # data for ai model results
@@ -116,4 +118,7 @@ if submit_mod:
         sha=file.sha,
         branch="main"
     )
-    st.success(f"✅ Registro AI {caballo_id_m} agregado en base de datos")    
+    st.success(f"✅ Registro AI {caballo_id_m} agregado en base de datos") 
+
+    # testing remote load
+    st.experimental_rerun()     
