@@ -5,3 +5,4 @@ Caballo_ID,Nombre,Raza,Sexo,Edad,Comentarios_generales,LRMD,LRMI,CMD,CMI,PFLRMD,
 4,Julie,Especial,Hembra,5,,1,0,1,2,1,0,1,1
 5,Zorro,Frison,Macho,3,,0,1,1,1,1,1,0,1
 6,Marcus,Criollo,Macho,8,,0,0,0,0,0,0,0,0
+7,Farro,Warmblood,Macho,0,,1,0,2,1,0,0,1,0
