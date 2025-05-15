@@ -3,7 +3,8 @@
 import os, sys
 
 # parent directory to python path
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+sys.path.insert(0, repo_root)
 
 import streamlit as st
 from github import Github
