@@ -10,6 +10,7 @@ import streamlit as st
 from github import Github
 import pandas as pd
 from app.utils import load_data
+from sklearn.metrics import cohen_kappa_score
 
 st.set_page_config(page_title="Análisis Motor Equino", layout="wide")
 
@@ -177,3 +178,46 @@ if st.session_state.show_mod:
         st.success("✅ Modelo AI guardado")
         st.cache_data.clear()
         st.rerun()
+
+st.markdown("---")
+
+# cohen's kappa analysis
+st.header("Cálculo de Kappa de Cohen")
+
+param_cols = [
+    "Cabeza_LRMD","Cabeza_LRMI","Cabeza_CMD","Cabeza_CMI",
+    "Cabeza_PFLRMD","Cabeza_PFLRMI","Cabeza_PFCMD","Cabeza_PFCMI",
+    "Pelvis_LRMD","Pelvis_LRMI","Pelvis_CMD","Pelvis_CMI",
+    "Pelvis_PFLRMD","Pelvis_PFLRMI","Pelvis_PFCMD","Pelvis_PFCMI",
+]
+
+# checking data frames caballo id consistency
+df_v = df_vet.set_index("Caballo_ID").loc[df_model["Caballo_ID"]]
+df_m = df_model.set_index("Caballo_ID").loc[df_v.index]
+
+# calculating cohen's kappa score
+kappas = {
+    col: cohen_kappa_score(df_v[col], df_m[col])
+    for col in param_cols
+}
+
+kappa_df = pd.DataFrame.from_dict(kappas, orient="index", columns=["Kappa"])
+st.dataframe(kappa_df)
+
+# dashboards
+st.header("Dashboard de Acuerdos")
+
+# 3.1 cohen's kappa Bar chart 
+st.subheader("Kappa por Parámetro")
+st.bar_chart(kappa_df["Kappa"])
+
+# 3.2 discrepancies line chart
+st.subheader("Discrepancias Totales")
+diffs = (df_v[param_cols] - df_m[param_cols]).abs().stack()
+st.line_chart(diffs.value_counts().sort_index())
+
+# 3.3 summary metrics
+st.subheader("Resumen Global")
+mean_kappa = kappa_df["Kappa"].mean()
+st.metric("Kappa Medio", f"{mean_kappa:.2f}")
+      
