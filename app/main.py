@@ -15,7 +15,7 @@ from sklearn.metrics import cohen_kappa_score
 st.set_page_config(page_title="Análisis Motor Equino", layout="wide")
 
 st.title("Plataforma de Análisis Motor Equino")
-
+st.subheader("Daniel Avilés Chinchilla")
 # show data in table
 st.subheader("Datos del Dr. Veterinario")
 df_vet = load_data("datasets/example_vet.csv")
