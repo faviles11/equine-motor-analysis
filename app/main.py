@@ -48,6 +48,7 @@ if st.session_state.show_vet:
         sexo       = st.selectbox("Sexo", ["Macho","Hembra"])
         edad       = st.number_input("Edad", min_value=0, step=1)
         analisis   = st.text_input("Análisis clínico", key="m_analisis")
+        condicion  = st.text_input("Condición Corporal", key="m_condicion")
 
         st.markdown("**Asimetría vertical de Cabeza**")
         cabeza_lrmd   = st.selectbox("Cabeza_LRMD",   [0,1,2,3])
@@ -77,6 +78,7 @@ if st.session_state.show_vet:
         new_row = {
             "Caballo_ID": new_id, "Nombre": nombre, "Raza": raza,
             "Sexo": sexo, "Edad": edad, "Analisis_clinico": analisis,
+            "Condicion_Corporal": condicion,
             # head
             "Cabeza_LRMD": cabeza_lrmd,   "Cabeza_LRMI": cabeza_lrmi,
             "Cabeza_CMD": cabeza_cmd,     "Cabeza_CMI": cabeza_cmi,
