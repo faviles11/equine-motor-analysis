@@ -13,4 +13,5 @@ Caballo_ID,Nombre,Raza,Sexo,Edad,Analisis_clinico,Cabeza_LRMD,Cabeza_LRMI,Cabeza
 12,Rejonea,Ibero,Hembra,15,Efusión en receso plantaroproximal en miembro posterior izquierdo,1,0,0,0,3,1,0,0,1,0,2,2,4,2,0,0,
 13,Precioso,Español,Macho,2,Sano,2,0,2,0,1,0,1,0,1,0,0,2,1,0,0,0,
 14,Dinoso,Español,Macho,7,,0,2,0,0,1,1,0,0,1,0,2,0,1,0,2,0,Sano
-015,Castaño,Español,Macho,12,,2,0,0,0,2,0,0,0,1,0,1,2,1,3,3,2,Engrosamiento radiocarpal medial miembro anterior derecho 
+15,Castaño,Español,Macho,12,,2,0,0,0,2,0,0,0,1,0,1,2,1,3,3,2,Engrosamiento radiocarpal medial miembro anterior derecho 
+016,Simoneta,Español,Hembra,5,,2,0,0,0,2,0,0,0,1,0,1,2,1,3,3,3,Engrosamiento zona proximal metatarsiana miembro posterior derecho 
