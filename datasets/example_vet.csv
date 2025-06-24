@@ -14,4 +14,5 @@ Caballo_ID,Nombre,Raza,Sexo,Edad,Analisis_clinico,Condicion_Corporal,Cabeza_LRMD
 13,Precioso,Español,Macho,2,Sano,Test,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 14,Dinoso,Español,Macho,7,Sano,3,0,0,0,0,0,0,0,0,1,0,2,0,1,0,2,0
 15,Castaño,Español,Macho,12,Engrosamiento radiocarpal medial miembro anterior derecho ,3,2,0,0,0,1,1,0,0,1,0,1,0,3,3,3,2
-016,Simoneta,Español,Hembra,5,Engrosamiento zona proximal metatarsiana miembro posterior derecho ,2.5,0,0,0,1,0,0,0,0,0,0,1,1,1,0,3,3
+16,Simoneta,Español,Hembra,5,Engrosamiento zona proximal metatarsiana miembro posterior derecho ,2.5,0,0,0,1,0,0,0,0,0,0,1,1,1,0,3,3
+017,Galanita,Español,Hembra,3,Sano,3,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0
