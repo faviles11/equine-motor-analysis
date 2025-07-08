@@ -232,7 +232,7 @@ head_cols   = [c for c in param_cols if c.startswith("Cabeza_")]
 pelvis_cols = [c for c in param_cols if c.startswith("Pelvis_")]
 
 # most affected member analysis
-st.subheader("1. Miembro más afectado por caballo")
+st.subheader("Miembro más afectado por caballo")
 # counting on how many values > 0 in head and pelvis
 df_aff = pd.DataFrame({
     "Cabeza": df_vet[head_cols].gt(0).sum(axis=1),
@@ -246,7 +246,7 @@ st.write(freq_region.to_frame("Frecuencia"))
 st.bar_chart(freq_region)
 
 # race, sex and age analysis-relationship
-st.subheader("1.1 Miembro más afectado vs Raza, Sexo y Edad")
+st.subheader("Miembro más afectado vs Raza, Sexo y Edad")
 df_meta = df_vet.set_index("Caballo_ID")[["Raza", "Sexo", "Edad"]].copy()
 df_meta["Max_afectado"] = df_aff["Max_afectado"]
 
@@ -273,7 +273,7 @@ st.bar_chart(age_table)
 
 
 # cualitative variables frequency
-st.subheader("2. Frecuencia de variables cualitativas")
+st.subheader("Frecuencia de variables cualitativas")
 
 qual_cols = ["Raza", "Sexo", "Analisis_clinico", "Condicion_Corporal"]
 for col in qual_cols:
