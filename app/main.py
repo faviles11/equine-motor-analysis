@@ -223,61 +223,87 @@ st.subheader("Resumen Global")
 mean_kappa = kappa_df["Kappa"].mean()
 st.metric("Kappa Medio", f"{mean_kappa:.2f}")
 
-# additional Analysis
+# ───────────────────────────────────────────────────────────────────────────────
+# Análisis adicionales
 st.markdown("---")
 st.header("Análisis Adicional")
 
-# reusing param_cols of Kappa
+# 0. finding the max indicator for each horse
 head_cols   = [c for c in param_cols if c.startswith("Cabeza_")]
 pelvis_cols = [c for c in param_cols if c.startswith("Pelvis_")]
 
-# most affected member analysis
-st.subheader("Miembro más afectado por caballo")
-# counting on how many values > 0 in head and pelvis
-df_aff = pd.DataFrame({
-    "Cabeza": df_vet[head_cols].gt(0).sum(axis=1),
-    "Pelvis": df_vet[pelvis_cols].gt(0).sum(axis=1)
+st.subheader("1. Indicadores más afectados por caballo")
+# finding the max indicator for each horse
+df_ind = pd.DataFrame({
+    "Max_Indicador_Cabeza": df_vet[head_cols].idxmax(axis=1),
+    "Max_Indicador_Pelvis": df_vet[pelvis_cols].idxmax(axis=1)
 }, index=df_vet["Caballo_ID"])
-# most affected region
-df_aff["Max_afectado"] = df_aff.idxmax(axis=1)
-# general frequency
-freq_region = df_aff["Max_afectado"].value_counts()
-st.write(freq_region.to_frame("Frecuencia"))
-st.bar_chart(freq_region)
 
-# race, sex and age analysis-relationship
-st.subheader("Miembro más afectado vs Raza, Sexo y Edad")
-df_meta = df_vet.set_index("Caballo_ID")[["Raza", "Sexo", "Edad"]].copy()
-df_meta["Max_afectado"] = df_aff["Max_afectado"]
+# 1. global frequency of indicators
+st.markdown("**Frecuencia global**")
+st.write("Cabeza:")
+freq_cabeza = df_ind["Max_Indicador_Cabeza"].value_counts()
+st.dataframe(freq_cabeza.to_frame("Frecuencia"))
+st.bar_chart(freq_cabeza)
+
+st.write("Pelvis:")
+freq_pelvis = df_ind["Max_Indicador_Pelvis"].value_counts()
+st.dataframe(freq_pelvis.to_frame("Frecuencia"))
+st.bar_chart(freq_pelvis)
+
+# 1.1. race vs sex vs age
+st.subheader("1.1 Indicador más afectado vs Raza, Sexo y Edad")
+df_meta = (
+    df_vet.set_index("Caballo_ID")
+          [["Raza","Sexo","Edad"]]
+          .copy()
+)
+df_meta[["Max_Indicador_Cabeza","Max_Indicador_Pelvis"]] = df_ind
 
 # by race
 st.markdown("**Por Raza**")
-race_table = df_meta.groupby(["Raza", "Max_afectado"]).size().unstack(fill_value=0)
-st.dataframe(race_table)
-st.bar_chart(race_table)
+race_cabeza = df_meta.groupby(["Raza","Max_Indicador_Cabeza"]).size().unstack(fill_value=0)
+race_pelvis = df_meta.groupby(["Raza","Max_Indicador_Pelvis"]).size().unstack(fill_value=0)
+st.write("Cabeza:")
+st.dataframe(race_cabeza)
+st.bar_chart(race_cabeza)
+st.write("Pelvis:")
+st.dataframe(race_pelvis)
+st.bar_chart(race_pelvis)
 
 # by sex
 st.markdown("**Por Sexo**")
-sex_table = df_meta.groupby(["Sexo", "Max_afectado"]).size().unstack(fill_value=0)
-st.dataframe(sex_table)
-st.bar_chart(sex_table)
+sex_cabeza = df_meta.groupby(["Sexo","Max_Indicador_Cabeza"]).size().unstack(fill_value=0)
+sex_pelvis = df_meta.groupby(["Sexo","Max_Indicador_Pelvis"]).size().unstack(fill_value=0)
+st.write("Cabeza:")
+st.dataframe(sex_cabeza)
+st.bar_chart(sex_cabeza)
+st.write("Pelvis:")
+st.dataframe(sex_pelvis)
+st.bar_chart(sex_pelvis)
 
 # by age
 st.markdown("**Por Edad**")
-df_meta["Edad_grupo"] = pd.cut(df_meta["Edad"], 
-                               bins=[0,5,10,20,30,100], 
-                               labels=["0-5","6-10","11-20","21-30","31+"])
-age_table = df_meta.groupby(["Edad_grupo", "Max_afectado"]).size().unstack(fill_value=0)
-st.dataframe(age_table)
-st.bar_chart(age_table)
+df_meta["Edad_grupo"] = pd.cut(
+    df_meta["Edad"],
+    bins=[0,5,10,20,30,100],
+    labels=["0-5","6-10","11-20","21-30","31+"]
+)
+age_cabeza = df_meta.groupby(["Edad_grupo","Max_Indicador_Cabeza"]).size().unstack(fill_value=0)
+age_pelvis = df_meta.groupby(["Edad_grupo","Max_Indicador_Pelvis"]).size().unstack(fill_value=0)
+st.write("Cabeza:")
+st.dataframe(age_cabeza)
+st.bar_chart(age_cabeza)
+st.write("Pelvis:")
+st.dataframe(age_pelvis)
+st.bar_chart(age_pelvis)
 
-
-# cualitative variables frequency
-st.subheader("Frecuencia de variables cualitativas")
-
-qual_cols = ["Raza", "Sexo", "Analisis_clinico", "Condicion_Corporal"]
+# 2. frequency of qualitative variables
+st.subheader("2. frecuencia de variables cualitativas")
+qual_cols = ["Raza","Sexo","Analisis_clinico","Condicion_Corporal"]
 for col in qual_cols:
     st.markdown(f"**{col}**")
     vc = df_vet[col].value_counts()
-    st.write(vc.to_frame("Frecuencia"))
+    st.dataframe(vc.to_frame("Frecuencia"))
     st.bar_chart(vc)
+
