@@ -21,4 +21,5 @@ Caballo_ID,Nombre,Raza,Sexo,Edad,Analisis_clinico,Cabeza_LRMD,Cabeza_LRMI,Cabeza
 20,Telemaco,Ibero,Macho,11,,0,0,1,1,1,1,0,1,0,2,1,2,0,0,1,3,Sano
 21,Apresurada,Ibero,Hembra,6,,0,0,1,1,0,0,0,0,1,2,2,3,2,0,1,4,Efusión en receso plantaro proximal ambos miembros posteriores
 22,Condesa,Paso costarricense ,Hembra,13,,3,0,3,0,3,1,3,2,0,2,0,2,1,0,0,0,Efusión en receso plantaro proximal mimebro anterior izq
-023,Bonaparte,Español,Macho,10,,2,0,2,0,2,0,0,0,0,1,2,3,2,0,2,4,
+23,Bonaparte,Español,Macho,10,,2,0,2,0,2,0,0,0,0,1,2,3,2,0,2,4,
+024,Amazónico,Ibero,Macho,4,,0,1,2,0,0,1,0,0,0,2,3,4,0,3,0,0,
