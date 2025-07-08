@@ -18,4 +18,5 @@ Caballo_ID,Nombre,Raza,Sexo,Edad,Analisis_clinico,Condicion_Corporal,Cabeza_LRMD
 17,Galanita,Español,Hembra,3,Sano,3.0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0
 18,Baraco,Ibero,Macho,9,Efusión en ambos menudillos posteriores,3.0,0,0,1,0,0,0,0,0,0,2,1,0,0,2,0,0
 19,Manguito,Criollo,Macho,20,Efusión vaina tendinea carpiana ,2.5,1,0,1,1,1,0,2,1,2,0,0,1,2,0,2,2
-020,Telemaco,Ibero,Macho,11,Sano,3,0,0,0,0,1,1,0,0,0,2,0,2,2,2,1,3
+20,Telemaco,Ibero,Macho,11,Sano,3.0,0,0,0,0,1,1,0,0,0,2,0,2,2,2,1,3
+021,Apresurada,Ibero,Macho,6,Efusión en receso plantaro proximal ambos miembros posteriores,3,0,0,1,1,0,0,0,0,1,2,2,1,2,0,1,2
