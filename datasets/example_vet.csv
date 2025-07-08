@@ -23,4 +23,5 @@ Caballo_ID,Nombre,Raza,Sexo,Edad,Analisis_clinico,Condicion_Corporal,Cabeza_LRMD
 22,Condesa,Paso costarricense,Hembra,13,Efusión en receso plantaro proximal mimebro anterior izq,3.0,1,0,2,0,3,0,3,0,0,2,0,2,1,0,3,0
 23,Bonaparte,Español,Macho,10,Efusión receso plantaro proximal miembro anterior derecho ,3.0,2,0,2,0,0,0,0,0,0,1,2,3,2,1,2,4
 24,Amazónico,Ibero,Macho,2,Sano,2.5,0,0,0,0,0,0,0,0,0,2,0,1,0,3,0,0
-025,Dantos,Ibero,Macho,3,Efusión vaina tendinea mimebro posterior izquierdo,3,0,2,0,4,0,0,0,1,0,2,2,0,0,3,0,0
+25,Dantos,Ibero,Macho,3,Efusión vaina tendinea mimebro posterior izquierdo,3.0,0,2,0,4,0,0,0,1,0,2,2,0,0,3,0,0
+026,Pandora,Ibero,Hembra,10,Mal de cuerda en ambos miembros posteriores ,3,1,0,1,1,0,0,0,0,3,3,2,2,0,2,0,2
