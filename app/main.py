@@ -232,7 +232,7 @@ st.header("Análisis Adicional")
 head_cols   = [c for c in param_cols if c.startswith("Cabeza_")]
 pelvis_cols = [c for c in param_cols if c.startswith("Pelvis_")]
 
-st.subheader("1. Indicadores más afectados por caballo")
+st.subheader("Indicadores más afectados por caballo")
 # finding the max indicator for each horse
 df_ind = pd.DataFrame({
     "Max_Indicador_Cabeza": df_vet[head_cols].idxmax(axis=1),
@@ -252,7 +252,7 @@ st.dataframe(freq_pelvis.to_frame("Frecuencia"))
 st.bar_chart(freq_pelvis)
 
 # 1.1. race vs sex vs age
-st.subheader("1.1 Indicador más afectado vs Raza, Sexo y Edad")
+st.subheader("Indicador más afectado vs Raza, Sexo y Edad")
 df_meta = (
     df_vet.set_index("Caballo_ID")
           [["Raza","Sexo","Edad"]]
@@ -299,7 +299,7 @@ st.dataframe(age_pelvis)
 st.bar_chart(age_pelvis)
 
 # 2. frequency of qualitative variables
-st.subheader("2. frecuencia de variables cualitativas")
+st.subheader("Frecuencia de variables cualitativas")
 qual_cols = ["Raza","Sexo","Analisis_clinico","Condicion_Corporal"]
 for col in qual_cols:
     st.markdown(f"**{col}**")
