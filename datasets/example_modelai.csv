@@ -27,4 +27,5 @@ Caballo_ID,Nombre,Raza,Sexo,Edad,Analisis_clinico,Cabeza_LRMD,Cabeza_LRMI,Cabeza
 26,Pandora,Ibero,Hembra,10,,1,0,1,1,1,0,1,2,0,1,0,2,0,2,2,1,
 27,Mango,Cuarto de milla,Macho,14,,1,1,2,2,1,1,1,0,0,0,2,1,3,3,2,0,
 28,Enamorado,Cuarto de milla,Macho,10,,0,2,0,2,0,2,0,0,1,0,0,0,1,1,0,0,
-029,Uthred,Cuarto de milla,Macho,5,,2,1,3,4,1,0,4,3,2,0,3,0,4,0,3,2,
+29,Uthred,Cuarto de milla,Macho,5,,2,1,3,4,1,0,4,3,2,0,3,0,4,0,3,2,
+030,Roso,Cuarto de milla,Macho,7,,0,0,0,1,1,1,0,0,0,0,2,1,1,2,0,0,
