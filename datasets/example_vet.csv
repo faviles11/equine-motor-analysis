@@ -27,4 +27,5 @@ Caballo_ID,Nombre,Raza,Sexo,Edad,Analisis_clinico,Condicion_Corporal,Cabeza_LRMD
 26,Pandora,Ibero,Hembra,10,Mal de cuerda en ambos miembros posteriores ,3.0,1,0,1,1,0,0,0,0,3,3,2,2,0,2,0,2
 27,Mango,Caurto de milla,Macho,14,Efusión vaina tendinea carpiana miembro posterior derecho,3.0,1,1,2,2,2,0,2,0,0,2,2,0,3,3,3,3
 28,Enamorado,Caurto de milla,Macho,3,Efusión receso plataro proximal miembro anterior izquierdo,3.0,0,0,0,0,0,2,0,0,0,2,0,0,0,3,0,0
-029,Uthred,Caurto de milla,Macho,5,Efusión vaina tendinea carpiana miembro posterior derecho,3,2,1,2,4,1,0,4,3,1,0,3,0,4,0,2,1
+29,Uthred,Caurto de milla,Macho,5,Efusión vaina tendinea carpiana miembro posterior derecho,3.0,2,1,2,4,1,0,4,3,1,0,3,0,4,0,2,1
+030,Roso,Cuarto de milla,Macho,7,Sano,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
