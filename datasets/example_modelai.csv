@@ -31,4 +31,5 @@ Caballo_ID,Nombre,Raza,Sexo,Edad,Analisis_clinico,Cabeza_LRMD,Cabeza_LRMI,Cabeza
 30,Roso,Cuarto de milla,Macho,7,,0,0,0,1,1,1,0,0,0,0,2,1,1,2,0,0,
 31,Molinera,Iberoamericanaamericana ,Macho,6,,0,1,2,0,0,2,3,3,1,0,1,0,3,0,3,1,
 32,Maraca,Ibero,Hembra,4,,1,0,1,0,2,0,0,0,0,1,2,0,2,2,2,0,
-033,Carbonera,Ibero,Hembra,4,,2,2,2,2,1,2,2,3,2,1,2,1,2,2,2,2,
+33,Carbonera,Ibero,Hembra,4,,2,2,2,2,1,2,2,3,2,1,2,1,2,2,2,2,
+034,Rambla ,Ibero,Hembra,2,,0,1,0,0,0,1,0,0,0,2,0,0,1,0,2,0,
