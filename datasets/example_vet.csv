@@ -29,7 +29,7 @@ Caballo_ID,Nombre,Raza,Sexo,Edad,Analisis_clinico,Condicion_Corporal,Cabeza_LRMD
 28,Enamorado,Caurto de milla,Macho,3,Efusión receso plataro proximal miembro anterior izquierdo,3.0,0,0,0,0,0,2,0,0,0,2,0,0,0,3,0,0
 29,Uthred,Caurto de milla,Macho,5,Efusión vaina tendinea carpiana miembro posterior derecho,3.0,2,1,2,4,1,0,4,3,1,0,3,0,4,0,2,1
 30,Roso,Cuarto de milla,Macho,7,Sano,3.0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-31,Molinera,Ibero,Macho,6,Sano,3.0,0,0,0,0,0,0,0,3,0,0,0,0,3,2,3,1
+31,Molinera,Ibero,Hembra,6,Sano,3.0,0,0,0,0,0,0,0,3,0,0,0,0,3,2,3,1
 32,Maraca,Ibero,Hembra,4,Efusión receso plantaro proximal mpd,3.0,1,0,1,1,2,0,1,0,0,1,2,1,1,2,2,0
 33,Carbonera,Ibero,Hembra,4,Sano,2.5,0,0,2,2,0,0,0,2,2,1,2,1,2,2,2,2
 34,Rambla ,Ibero,Hembra,2,Sano,3.0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
