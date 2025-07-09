@@ -9,24 +9,23 @@ Caballo_ID,Nombre,Raza,Sexo,Edad,Analisis_clinico,Condicion_Corporal,Cabeza_LRMD
 8,Amante,Español,Macho,10,Efusión vainas proximales todos los miembros,2.5,0,0,0,0,1,0,0,0,2,0,2,0,0,0,2,0
 9,Felino,Español,Macho,5,Sano,3.0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,1,0
 10,Mosqueada,Español,Hembra,3,Efusión bursos digitales,3.0,0,1,4,0,2,2,4,2,0,0,0,0,3,0,1,0
-11,Retinta,Ibero,Hembra,6,Mala conformación de ranillas,3.0,0,0,1,1,1,0,2,2,0,0,0,0,0,2,2,0
-12,Rejonea,Ibero,Hembra,15,Efusión en receso plantaroproximal en miembro posterior izquierdo,4.0,0,0,0,0,3,1,0,0,1,0,0,0,4,2,2,0
+11,Retinta,Iberoamericana,Hembra,6,Mala conformación de ranillas,3.0,0,0,1,1,1,0,2,2,0,0,0,0,0,2,2,0
+12,Rejonea,Iberoamericana,Hembra,15,Efusión en receso plantaroproximal en miembro posterior izquierdo,4.0,0,0,0,0,3,1,0,0,1,0,0,0,4,2,2,0
 13,Precioso,Español,Macho,2,Sano,3.0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 14,Dinoso,Español,Macho,7,Sano,3.0,0,0,0,0,0,0,0,0,1,0,2,0,1,0,2,0
 15,Castaño,Español,Macho,12,Engrosamiento radiocarpal medial miembro anterior derecho ,3.0,2,0,0,0,1,1,0,0,1,0,1,0,3,3,3,2
 16,Simoneta,Español,Hembra,5,Engrosamiento zona proximal metatarsiana miembro posterior derecho ,2.5,0,0,0,1,0,0,0,0,0,0,1,1,1,0,3,3
 17,Galanita,Español,Hembra,3,Sano,3.0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0
-18,Baraco,Ibero,Macho,9,Efusión en ambos menudillos posteriores,3.0,0,0,1,0,0,0,0,0,0,2,1,0,0,2,0,0
+18,Baraco,Iberoamericana,Macho,9,Efusión en ambos menudillos posteriores,3.0,0,0,1,0,0,0,0,0,0,2,1,0,0,2,0,0
 19,Manguito,Criollo,Macho,20,Efusión vaina tendinea carpiana ,2.5,1,0,1,1,1,0,2,1,2,0,0,1,2,0,2,2
-20,Telemaco,Ibero,Macho,11,Sano,3.0,0,0,0,0,1,1,0,0,0,2,0,2,2,2,1,3
-21,Apresurada,Ibero,Macho,6,Efusión en receso plantaro proximal ambos miembros posteriores,3.0,0,0,1,1,0,0,0,0,1,2,2,1,2,0,1,2
+20,Telemaco,Iberoamericana,Macho,11,Sano,3.0,0,0,0,0,1,1,0,0,0,2,0,2,2,2,1,3
+21,Apresurada,Iberoamericana,Macho,6,Efusión en receso plantaro proximal ambos miembros posteriores,3.0,0,0,1,1,0,0,0,0,1,2,2,1,2,0,1,2
 22,Condesa,Paso costarricense,Hembra,13,Efusión en receso plantaro proximal mimebro anterior izq,3.0,1,0,2,0,3,0,3,0,0,2,0,2,1,0,3,0
 23,Bonaparte,Español,Macho,10,Efusión receso plantaro proximal miembro anterior derecho ,3.0,2,0,2,0,0,0,0,0,0,1,2,3,2,1,2,4
-24,Amazónico,Ibero,Macho,2,Sano,2.5,0,0,0,0,0,0,0,0,0,2,0,1,0,3,0,0
-25,Dantos,Ibero,Macho,3,Efusión vaina tendinea mimebro posterior izquierdo,3.0,0,2,0,4,0,0,0,1,0,2,2,0,0,3,0,0
-26,Pandora,Ibero,Hembra,10,Mal de cuerda en ambos miembros posteriores ,3.0,1,0,1,1,0,0,0,0,3,3,2,2,0,2,0,2
+24,Amazónico,Iberoamericana,Macho,2,Sano,2.5,0,0,0,0,0,0,0,0,0,2,0,1,0,3,0,0
+25,Dantos,Iberoamericana,Macho,3,Efusión vaina tendinea mimebro posterior izquierdo,3.0,0,2,0,4,0,0,0,1,0,2,2,0,0,3,0,0
+26,Pandora,Iberoamericana,Hembra,10,Mal de cuerda en ambos miembros posteriores ,3.0,1,0,1,1,0,0,0,0,3,3,2,2,0,2,0,2
 27,Mango,Caurto de milla,Macho,14,Efusión vaina tendinea carpiana miembro posterior derecho,3.0,1,1,2,2,2,0,2,0,0,2,2,0,3,3,3,3
 28,Enamorado,Caurto de milla,Macho,3,Efusión receso plataro proximal miembro anterior izquierdo,3.0,0,0,0,0,0,2,0,0,0,2,0,0,0,3,0,0
 29,Uthred,Caurto de milla,Macho,5,Efusión vaina tendinea carpiana miembro posterior derecho,3.0,2,1,2,4,1,0,4,3,1,0,3,0,4,0,2,1
 30,Roso,Cuarto de milla,Macho,7,Sano,3.0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-031,Maraca,Iberoamericana,Hembra,4,Efusión en receso plantaro proximal mimebro posterior derecho ,3,1,0,1,1,2,0,1,0,0,1,2,1,1,2,2,0
