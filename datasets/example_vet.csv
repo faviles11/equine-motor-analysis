@@ -42,4 +42,5 @@ Caballo_ID,Nombre,Raza,Sexo,Edad,Analisis_clinico,Condicion_Corporal,Cabeza_LRMD
 41,Frisón,Frisón,Macho,4,Sano,3.0,1,0,0,0,2,0,0,3,0,2,0,4,0,2,0,3
 42,Wrangler,Cuarto de milla,Macho,15,Efusión en receso plantaro proximal miembro posterior derecho,3.0,2,0,2,0,2,0,2,0,3,0,0,2,3,2,3,0
 43,Manchas,Cuarto de milla,Macho,8,Efusión en receso plantaro proximal mimebro anterior izquierdo,3.0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0
-044,Roxie,Cuarto de milla,Hembra,4,Sano,3,0,0,0,0,0,0,0,0,0,0,0,0,1,2,0,2
+44,Roxie,Cuarto de milla,Hembra,4,Sano,3.0,0,0,0,0,0,0,0,0,0,0,0,0,1,2,0,2
+045,Espíritu,Iberoamericano,Macho,16,Efusión receso plantaro proximal miembro anterior y posterior derecho,3,0,0,4,2,2,0,4,3,2,0,4,3,3,3,3,3
