@@ -33,4 +33,5 @@ Caballo_ID,Nombre,Raza,Sexo,Edad,Analisis_clinico,Cabeza_LRMD,Cabeza_LRMI,Cabeza
 32,Maraca,Ibero,Hembra,4,,1,0,1,0,2,0,0,0,0,1,2,0,2,2,2,0,
 33,Carbonera,Ibero,Hembra,4,,2,2,2,2,1,2,2,3,2,1,2,1,2,2,2,2,
 34,Rambla ,Ibero,Hembra,2,,0,1,0,0,0,1,0,0,0,2,0,0,1,0,2,0,
-035,Nacuma ,Ibero,Hembra,2,,0,0,0,0,0,0,0,0,0,1,0,3,0,0,0,0,
+35,Nacuma ,Ibero,Hembra,2,,0,0,0,0,0,0,0,0,0,1,0,3,0,0,0,0,
+036,Orocai,Ibero,Macho,4,,0,2,0,3,0,2,0,0,2,0,2,1,2,0,0,0,
