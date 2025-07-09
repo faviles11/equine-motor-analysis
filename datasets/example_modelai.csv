@@ -39,4 +39,5 @@ Caballo_ID,Nombre,Raza,Sexo,Edad,Analisis_clinico,Cabeza_LRMD,Cabeza_LRMI,Cabeza
 38,Noche,Warlander,Hembra,8,,0,0,0,1,0,0,1,1,1,0,1,0,2,1,2,0,
 39,Nube,Iberoamericano,Hembra,5,,0,0,2,3,1,0,1,3,0,0,2,2,1,2,0,2,
 40,Mosqueada 2,Ibero,Hembra,18,,0,1,0,3,0,0,0,3,3,0,2,0,3,1,2,0,
-041,Frisón ,Frisón,Macho,4,,1,0,3,0,2,0,3,0,0,2,2,4,0,2,3,0,
+41,Frisón ,Frisón,Macho,4,,1,0,3,0,2,0,3,0,0,2,2,4,0,2,3,0,
+042,Wrangler,Cuarto de milla,Macho,15,,2,0,2,0,2,0,2,2,0,0,0,1,1,2,3,2,
