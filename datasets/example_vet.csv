@@ -35,4 +35,5 @@ Caballo_ID,Nombre,Raza,Sexo,Edad,Analisis_clinico,Condicion_Corporal,Cabeza_LRMD
 34,Rambla ,Iberoamericana,Hembra,2,Sano,3.0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 35,Nacuma,Iberoamericana,Hembra,2,Efusión reecso plantaro proximal ambos miembros posteriores ,3.0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 36,Orocai,Iberoamericana,Macho,4,Sano,3.0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-037,Copeto,Español,Macho,7,Efusión en receso plantaro proximal miembro anterior izquierdo,3,1,0,2,1,0,0,1,0,1,0,0,3,2,0,4,2
+37,Copeto,Español,Macho,7,Efusión en receso plantaro proximal miembro anterior izquierdo,3.0,1,0,2,1,0,0,1,0,1,0,0,3,2,0,4,2
+038,Noche,Warlander,Hembra,8,Efusión receso plantaro proximal miembro anterior derecho,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
