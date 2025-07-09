@@ -1,7 +1,7 @@
 import pandas as pd
 import streamlit as st
 
-@st.cache_data
+@st.cache_data(ttl=1)
 def load_data(csv_file):
     """
     Load data from a CSV file into a pandas DataFrame.
