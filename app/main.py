@@ -16,6 +16,10 @@ st.set_page_config(page_title="Análisis Motor Equino", layout="wide")
 
 st.title("Plataforma de Análisis Motor Equino")
 st.subheader("Daniel Avilés Chinchilla")
+# refresh cache for aditional analysis
+if st.button("🔄 Actualizar datos"):
+    st.cache_data.clear()
+    st.rerun()
 # show data in table
 st.subheader("Datos del Dr. Veterinario")
 df_vet = load_data("datasets/example_vet.csv")
