@@ -42,4 +42,5 @@ Caballo_ID,Nombre,Raza,Sexo,Edad,Analisis_clinico,Cabeza_LRMD,Cabeza_LRMI,Cabeza
 41,Frisón ,Frisón,Macho,4,,1,0,3,0,2,0,3,0,0,2,2,4,0,2,3,0,
 42,Wrangler,Cuarto de milla,Macho,15,,2,0,2,0,2,0,2,2,0,0,0,1,1,2,3,2,
 43,Manchas,Cuarto de milla,Macho,8,,0,1,0,0,0,2,0,0,0,0,1,0,2,0,0,2,
-044,Roxie,Cuarto de milla,Hembra,4,,0,0,0,0,1,0,0,2,0,0,1,0,1,0,1,0,
+44,Roxie,Cuarto de milla,Hembra,4,,0,0,0,0,1,0,0,2,0,0,1,0,1,0,1,0,
+045,Espíritu,Iberoamericano,Macho,16,,0,0,4,2,2,0,4,3,2,0,0,0,1,1,0,0,
