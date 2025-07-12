@@ -320,16 +320,28 @@ before_cols = [
     if (c.startswith("Cabeza_") or c.startswith("Pelvis_")) 
        and not c.startswith(("Cabeza_P","Pelvis_P"))
 ]
-pairs = {
-    before: f"{before.split('_',1)[0]}_P{before.split('_',1)[1]}"
-    for before in before_cols
-    if f"{before.split('_',1)[0]}_P{before.split('_',1)[1]}" in df_vet.columns
-}
+# Find all before/after pairs based on your column naming
+pairs = {}
+for c in df_vet.columns:
+    if c.startswith("Cabeza_") or c.startswith("Pelvis_"):
+        # Only non-PF columns as "before"
+        if not ("PFL" in c or "PFC" in c):
+            # Try to find a matching "PFL..." or "PFC..." column
+            base = c.split("_", 1)[1]
+            after_pf = f"{c.split('_')[0]}_PFL{base[2:]}"
+            after_pc = f"{c.split('_')[0]}_PFC{base[2:]}"
+            if after_pf in df_vet.columns:
+                pairs[c] = after_pf
+            elif after_pc in df_vet.columns:
+                pairs[c] = after_pc
 
 diff_bins = ["=", "+", "++", "+++", "++++"]
 records = {}
 for before, after in pairs.items():
     diff = df_vet[after] - df_vet[before]
+    # Get indicator name (e.g., LRMD) and prefix (Cabeza/Pelvis)
+    prefix, indicator = before.split("_", 1)
+    row_name = f"{prefix}_{indicator}"  # or just indicator if you want to aggregate
     counts = {
         "=":   int((diff == 0).sum()),
         "+":   int((diff == 1).sum()),
@@ -337,7 +349,7 @@ for before, after in pairs.items():
         "+++": int((diff == 3).sum()),
         "++++":int((diff >= 4).sum()),
     }
-    records[before] = counts
+    records[row_name] = counts
 
 df_diff = pd.DataFrame.from_dict(records, orient="index", columns=diff_bins)
 st.dataframe(df_diff)
