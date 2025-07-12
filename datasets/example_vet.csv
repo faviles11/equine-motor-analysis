@@ -1,46 +1,46 @@
 Caballo_ID,Nombre,Raza,Sexo,Edad,Analisis_clinico,Condicion_Corporal,Cabeza_LRMD,Cabeza_LRMI,Cabeza_CMD,Cabeza_CMI,Cabeza_PFLRMD,Cabeza_PFLRMI,Cabeza_PFCMD,Cabeza_PFCMI,Pelvis_LRMD,Pelvis_LRMI,Pelvis_CMD,Pelvis_CMI,Pelvis_PFLRMD,Pelvis_PFLRMI,Pelvis_PFCMD,Pelvis_PFCMI
 1,Sabrina,Warmblood,Hembra,30,Atrofia muscular,2.0,0,3,0,3,1,3,1,3,3,0,3,0,3,1,3,1
 2,Marcus,Criollo,Macho,8,Sano,4.0,0,0,0,0,0,0,0,0,0,0,0,0,1,2,0,1
-3,Farro,Warmblood,Macho,20,Efusión Menudillo,3.0,1,0,2,1,0,0,1,0,0,1,0,1,2,2,1,1
-4,Noblessa,Warmblood,Hembra,30,Efusion Menudillo,2.0,2,1,2,2,2,2,2,2,3,1,3,1,3,4,2,1
+3,Farro,Warmblood,Macho,20,Efusión en menudillos en los 4 miembros,3.0,1,0,2,1,0,0,1,0,0,1,0,1,2,2,1,1
+4,Noblessa,Warmblood,Hembra,30,Efusión en menudillos en los 4 miembros,2.0,2,1,2,2,2,2,2,2,3,1,3,1,3,4,2,1
 5,Julie,Español,Hembra,3,Sano,3.0,0,0,0,0,0,0,1,2,2,0,0,0,2,0,0,0
-6,Palmeño,Español,Macho,13,Atrofia muscular,2.0,0,0,0,0,1,0,1,1,2,0,2,0,2,0,2,0
-7,Zorro,Frisón,Macho,7,Malformación menudillo,3.0,0,0,0,0,1,2,2,1,0,0,0,0,1,1,1,2
-8,Amante,Español,Macho,10,Efusión vainas proximales todos los miembros,2.5,0,0,0,0,1,0,0,0,2,0,2,0,0,0,2,0
+6,Palmeño,Español,Macho,13,Atrofia muscular en musculos dorsales,2.0,0,0,0,0,1,0,1,1,2,0,2,0,2,0,2,0
+7,Zorro,Frisón,Macho,7,Efusión en menudillo miembro anterior derecho,3.0,0,0,0,0,1,2,2,1,0,0,0,0,1,1,1,2
+8,Amante,Español,Macho,10,Efusión en vainas proximales todos los miembros,2.5,0,0,0,0,1,0,0,0,2,0,2,0,0,0,2,0
 9,Felino,Español,Macho,5,Sano,3.0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,1,0
-10,Mosqueada,Español,Hembra,3,Efusión bursos digitales,3.0,0,1,4,0,2,2,4,2,0,0,0,0,3,0,1,0
+10,Mosqueada,Español,Hembra,3,Efusión de bursas digitales de miembros posteriores,3.0,0,1,4,0,2,2,4,2,0,0,0,0,3,0,1,0
 11,Retinta,Iberoamericano,Hembra,6,Mala conformación de ranillas,3.0,0,0,1,1,1,0,2,2,0,0,0,0,0,2,2,0
-12,Rejonea,Iberoamericano,Hembra,15,Efusión en receso plantaroproximal en miembro posterior izquierdo,4.0,0,0,0,0,3,1,0,0,1,0,0,0,4,2,2,0
+12,Rejonea,Iberoamericano,Hembra,15,Efusión en receso plantaro proximal miembro posterior izquierdo,4.0,0,0,0,0,3,1,0,0,1,0,0,0,4,2,2,0
 13,Precioso,Español,Macho,2,Sano,3.0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 14,Dinoso,Español,Macho,7,Sano,3.0,0,0,0,0,0,0,0,0,1,0,2,0,1,0,2,0
 15,Castaño,Español,Macho,12,Engrosamiento radiocarpal medial miembro anterior derecho ,3.0,2,0,0,0,1,1,0,0,1,0,1,0,3,3,3,2
 16,Simoneta,Español,Hembra,5,Engrosamiento zona proximal metatarsiana miembro posterior derecho ,2.5,0,0,0,1,0,0,0,0,0,0,1,1,1,0,3,3
 17,Galanita,Español,Hembra,3,Sano,3.0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0
 18,Baraco,Iberoamericano,Macho,9,Efusión en ambos menudillos posteriores,3.0,0,0,1,0,0,0,0,0,0,2,1,0,0,2,0,0
-19,Manguito,Criollo,Macho,20,Efusión vaina tendinea carpiana ,2.5,1,0,1,1,1,0,2,1,2,0,0,1,2,0,2,2
+19,Manguito,Criollo,Macho,20,Efusión en receso plantaro proximal miembro anterior derecho ,2.5,1,0,1,1,1,0,2,1,2,0,0,1,2,0,2,2
 20,Telemaco,Iberoamericano,Macho,11,Sano,3.0,0,0,0,0,1,1,0,0,0,2,0,2,2,2,1,3
 21,Apresurada,Iberoamericano,Macho,6,Efusión en receso plantaro proximal ambos miembros posteriores,3.0,0,0,1,1,0,0,0,0,1,2,2,1,2,0,1,2
-22,Condesa,Paso costarricense,Hembra,13,Efusión en receso plantaro proximal mimebro anterior izq,3.0,1,0,2,0,3,0,3,0,0,2,0,2,1,0,3,0
-23,Bonaparte,Español,Macho,10,Efusión receso plantaro proximal miembro anterior derecho ,3.0,2,0,2,0,0,0,0,0,0,1,2,3,2,1,2,4
+22,Condesa,Paso costarricense,Hembra,13,Efusión en receso plantaro proximal miembro anterior izquierdo,3.0,1,0,2,0,3,0,3,0,0,2,0,2,1,0,3,0
+23,Bonaparte,Español,Macho,10,Efusión en receso plantaro proximal miembro anterior derecho ,3.0,2,0,2,0,0,0,0,0,0,1,2,3,2,1,2,4
 24,Amazónico,Iberoamericano,Macho,2,Sano,2.5,0,0,0,0,0,0,0,0,0,2,0,1,0,3,0,0
-25,Dantos,Iberoamericano,Macho,3,Efusión vaina tendinea mimebro posterior izquierdo,3.0,0,2,0,4,0,0,0,1,0,2,2,0,0,3,0,0
+25,Dantos,Iberoamericano,Macho,3,Efusión en vaina tendinosa tarsiana miembro posterior izquierdo,3.0,0,2,0,4,0,0,0,1,0,2,2,0,0,3,0,0
 26,Pandora,Iberoamericano,Hembra,10,Mal de cuerda en ambos miembros posteriores ,3.0,1,0,1,1,0,0,0,0,3,3,2,2,0,2,0,2
-27,Mango,Cuarto de milla,Macho,14,Efusión vaina tendinea carpiana miembro posterior derecho,3.0,1,1,2,2,2,0,2,0,0,2,2,0,3,3,3,3
-28,Enamorado,Cuarto de milla,Macho,3,Efusión receso plataro proximal miembro anterior izquierdo,3.0,0,0,0,0,0,2,0,0,0,2,0,0,0,3,0,0
-29,Uthred,Cuarto de milla,Macho,5,Efusión vaina tendinea carpiana miembro posterior derecho,3.0,2,1,2,4,1,0,4,3,1,0,3,0,4,0,2,1
+27,Mango,Cuarto de milla,Macho,14,Efusión en vaina tendinosa carpiana miembro posterior derecho,3.0,1,1,2,2,2,0,2,0,0,2,2,0,3,3,3,3
+28,Enamorado,Cuarto de milla,Macho,3,Efusión en receso plantaro proximal miembro anterior izquierdo,3.0,0,0,0,0,0,2,0,0,0,2,0,0,0,3,0,0
+29,Uthred,Cuarto de milla,Macho,5,Efusión en vaina tendinosa carpiana miembro posterior derecho,3.0,2,1,2,4,1,0,4,3,1,0,3,0,4,0,2,1
 30,Roso,Cuarto de milla,Macho,7,Sano,3.0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 31,Molinera,Iberoamericano,Hembra,6,Sano,3.0,0,0,0,0,0,0,0,3,0,0,0,0,3,2,3,1
-32,Maraca,Iberoamericano,Hembra,4,Efusión receso plantaro proximal mpd,3.0,1,0,1,1,2,0,1,0,0,1,2,1,1,2,2,0
+32,Maraca,Iberoamericano,Hembra,4,Efusión en receso plantaro proximal miembro posterior derecho,3.0,1,0,1,1,2,0,1,0,0,1,2,1,1,2,2,0
 33,Carbonera,Iberoamericano,Hembra,4,Sano,2.5,0,0,2,2,0,0,0,2,2,1,2,1,2,2,2,2
 34,Rambla ,Iberoamericano,Hembra,2,Sano,3.0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-35,Nacuma,Iberoamericano,Hembra,2,Efusión reecso plantaro proximal ambos miembros posteriores ,3.0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+35,Nacuma,Iberoamericano,Hembra,2,Efusión en receso plantaro proximal ambos miembros posteriores,3.0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 36,Orocai,Iberoamericano,Macho,4,Sano,3.0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 37,Copeto,Español,Macho,7,Efusión en receso plantaro proximal miembro anterior izquierdo,3.0,1,0,2,1,0,0,1,0,1,0,0,3,2,0,4,2
-38,Noche,Warlander,Hembra,8,Efusión receso plantaro proximal miembro anterior derecho,3.0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-39,Nube,Iberoamericano,Hembra,5,Efusión menudillo mimebro posterior derecho,3.0,0,0,0,3,1,2,2,3,0,2,2,2,3,2,0,2
-40,Mosqueada 2,Iberoamericano,Hembra,18,Efusión receso plantaro proximal mimebro posterior derecho,3.0,0,0,0,0,0,0,0,3,3,0,2,0,3,2,3,2
+38,Noche,Warlander,Hembra,8,Efusión en receso plantaro proximal miembro anterior derecho,3.0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+39,Nube,Iberoamericano,Hembra,5,Efusión en menudillo miembro posterior derecho,3.0,0,0,0,3,1,2,2,3,0,2,2,2,3,2,0,2
+40,Mosqueada 2,Iberoamericano,Hembra,18,Efusión en receso plantaro proximal miembro anterior derecho,3.0,0,0,0,0,0,0,0,3,3,0,2,0,3,2,3,2
 41,Frisón,Frisón,Macho,4,Sano,3.0,1,0,0,0,2,0,0,3,0,2,0,4,0,2,0,3
 42,Wrangler,Cuarto de milla,Macho,15,Efusión en receso plantaro proximal miembro posterior derecho,3.0,2,0,2,0,2,0,2,0,3,0,0,2,3,2,3,0
 43,Manchas,Cuarto de milla,Macho,8,Efusión en receso plantaro proximal mimebro anterior izquierdo,3.0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0
 44,Roxie,Cuarto de milla,Hembra,4,Sano,3.0,0,0,0,0,0,0,0,0,0,0,0,0,1,2,0,2
-045,Espíritu,Iberoamericano,Macho,16,Efusión receso plantaro proximal miembro anterior y posterior derecho,3,0,0,4,2,2,0,4,3,2,0,4,3,3,3,3,3
+045,Espíritu,Iberoamericano,Macho,16,Efusión en receso plantaro proximal miembro anterior y posterior derecho,3,0,0,4,2,2,0,4,3,2,0,4,3,3,3,3,3
