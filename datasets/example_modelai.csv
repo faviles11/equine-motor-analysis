@@ -1,46 +1,46 @@
-Caballo_ID,Nombre,Raza,Sexo,Edad,Cabeza_LRMD,Cabeza_LRMI,Cabeza_CMD,Cabeza_CMI,Cabeza_PFLRMD,Cabeza_PFLRMI,Cabeza_PFCMD,Cabeza_PFCMI,Pelvis_LRMD,Pelvis_LRMI,Pelvis_CMD,Pelvis_CMI,Pelvis_PFLRMD,Pelvis_PFLRMI,Pelvis_PFCMD,Pelvis_PFCMI,Analisis-clinico
-1,Sabrina,Warmblood,Hembra,30,0,2,0,3,0,4,1,2,4,0,4,0,4,0,4,1,
-2,Marcus,Criollo,Macho,8,0,0,0,0,0,2,3,1,2,2,1,2,1,3,1,4,
-3,Farro,Warmblood,Macho,20,1,0,2,1,3,0,1,0,0,0,0,0,2,2,1,1,
-4,Noblessa,Warmblood,Hembra,30,2,0,2,1,3,1,2,2,3,0,3,1,1,0,2,1,
-5,Julie,Español,Hembra,3,0,0,0,1,0,0,0,2,0,0,0,1,2,1,2,1,
-6,Palmeño,Español,Macho,13,2,0,2,1,2,0,2,1,0,0,0,0,1,1,1,0,
-7,Zorro,Frisón,Macho,7,0,1,1,1,2,1,2,0,0,2,1,0,0,2,1,1,
-8,Amante,Español,Macho,10,1,0,0,1,1,0,0,1,0,1,0,0,3,0,2,2,
-9,Felino,Español,Macho,5,0,0,1,0,2,0,0,2,0,1,0,1,2,2,1,1,
-10,Mosqueada,Español,Hembra,3,1,0,4,1,2,2,4,1,2,0,0,2,3,0,1,0,
-11,Retinta,Iberoamericano,Hembra,6,0,0,0,1,1,0,2,3,0,0,0,0,0,2,2,0,
-12,Rejonea,Iberoamericano,Hembra,15,1,0,0,0,3,1,0,0,1,0,2,2,4,2,0,0,
-13,Precioso,Español,Macho,2,2,0,2,0,1,0,1,0,1,0,0,2,1,0,0,0,
-14,Dinoso,Español,Macho,7,0,2,0,0,1,1,0,0,1,0,2,0,1,0,2,0,
-15,Castaño,Español,Macho,12,2,0,0,0,2,0,0,0,1,0,1,2,1,3,3,2,
-16,Simoneta,Español,Hembra,5,2,0,0,0,2,0,0,0,1,0,1,2,1,3,3,3,
-17,Galanita,Español,Hembra,3,0,0,0,0,0,0,0,0,0,0,1,3,1,1,0,0,
-18,Baraco,Iberoamericano,Macho,9,0,1,1,0,0,1,0,0,0,2,1,0,2,2,0,0,
-19,Manguito,Criollo,Macho,20,1,0,2,1,2,0,2,0,0,0,0,2,0,2,1,2,Efusión vaina tendinea carpiana 
-20,Telemaco,Iberoamericano,Macho,11,0,0,1,1,1,1,0,1,0,2,1,2,0,0,1,3,Sano
-21,Apresurada,Iberoamericano,Hembra,6,0,0,1,1,0,0,0,0,1,2,2,3,2,0,1,4,Efusión en receso plantaro proximal ambos miembros posteriores
-22,Condesa,Paso costarricense ,Hembra,13,3,0,3,0,3,1,3,2,0,2,0,2,1,0,0,0,Efusión en receso plantaro proximal mimebro anterior izq
-23,Bonaparte,Español,Macho,10,2,0,2,0,2,0,0,0,0,1,2,3,2,0,2,4,
-24,Amazónico,Iberoamericano,Macho,4,0,1,2,0,0,1,0,0,0,2,3,4,0,3,0,0,
-25,Dantos,Iberoamericano,Macho,7,0,2,0,4,0,2,0,3,0,0,1,0,1,3,0,0,
-26,Pandora,Iberoamericano,Hembra,10,1,0,1,1,1,0,1,2,0,1,0,2,0,2,2,1,
-27,Mango,Cuarto de milla,Macho,14,1,1,2,2,1,1,1,0,0,0,2,1,3,3,2,0,
-28,Enamorado,Cuarto de milla,Macho,10,0,2,0,2,0,2,0,0,1,0,0,0,1,1,0,0,
-29,Uthred,Cuarto de milla,Macho,5,2,1,3,4,1,0,4,3,2,0,3,0,4,0,3,2,
-30,Roso,Cuarto de milla,Macho,7,0,0,0,1,1,1,0,0,0,0,2,1,1,2,0,0,
-31,Molinera,Iberoamericano ,Hembra,6,0,1,2,0,0,2,3,3,1,0,1,0,3,0,3,1,
-32,Maraca,Iberoamericano,Hembra,4,1,0,1,0,2,0,0,0,0,1,2,0,2,2,2,0,
-33,Carbonera,Iberoamericano,Hembra,4,2,2,2,2,1,2,2,3,2,1,2,1,2,2,2,2,
-34,Rambla ,Iberoamericano,Hembra,2,0,1,0,0,0,1,0,0,0,2,0,0,1,0,2,0,
-35,Nacuma ,Iberoamericano,Hembra,2,0,0,0,0,0,0,0,0,0,1,0,3,0,0,0,0,
-36,Orocai,Iberoamericano,Macho,4,0,2,0,3,0,2,0,0,2,0,2,1,2,0,0,0,
-37,Copeto,Español,Macho,7,1,1,2,1,0,2,1,0,1,2,3,3,2,1,4,2,
-38,Noche,Warlander,Hembra,8,0,0,0,1,0,0,1,1,1,0,1,0,2,1,2,0,
-39,Nube,Iberoamericano,Hembra,5,0,0,2,3,1,0,1,3,0,0,2,2,1,2,0,2,
-40,Mosqueada 2,Ibero,Hembra,18,0,1,0,3,0,0,0,3,3,0,2,0,3,1,2,0,
-41,Frisón ,Frisón,Macho,4,1,0,3,0,2,0,3,0,0,2,2,4,0,2,3,0,
-42,Wrangler,Cuarto de milla,Macho,15,2,0,2,0,2,0,2,2,0,0,0,1,1,2,3,2,
-43,Manchas,Cuarto de milla,Macho,8,0,1,0,0,0,2,0,0,0,0,1,0,2,0,0,2,
-44,Roxie,Cuarto de milla,Hembra,4,0,0,0,0,1,0,0,2,0,0,1,0,1,0,1,0,
-045,Espíritu,Iberoamericano,Macho,16,0,0,4,2,2,0,4,3,2,0,0,0,1,1,0,0,
+Caballo_ID,Nombre,Raza,Sexo,Edad,Cabeza_LRMD,Cabeza_LRMI,Cabeza_CMD,Cabeza_CMI,Cabeza_PFLRMD,Cabeza_PFLRMI,Cabeza_PFCMD,Cabeza_PFCMI,Pelvis_LRMD,Pelvis_LRMI,Pelvis_CMD,Pelvis_CMI,Pelvis_PFLRMD,Pelvis_PFLRMI,Pelvis_PFCMD,Pelvis_PFCMI
+1,Sabrina,Warmblood,Hembra,30,0,2,0,3,0,4,1,2,4,0,4,0,4,0,4,1
+2,Marcus,Criollo,Macho,8,0,0,0,0,0,2,3,1,2,2,1,2,1,3,1,4
+3,Farro,Warmblood,Macho,20,1,0,2,1,3,0,1,0,0,0,0,0,2,2,1,1
+4,Noblessa,Warmblood,Hembra,30,2,0,2,1,3,1,2,2,3,0,3,1,1,0,2,1
+5,Julie,Español,Hembra,3,0,0,0,1,0,0,0,2,0,0,0,1,2,1,2,1
+6,Palmeño,Español,Macho,13,2,0,2,1,2,0,2,1,0,0,0,0,1,1,1,0
+7,Zorro,Frisón,Macho,7,0,1,1,1,2,1,2,0,0,2,1,0,0,2,1,1
+8,Amante,Español,Macho,10,1,0,0,1,1,0,0,1,0,1,0,0,3,0,2,2
+9,Felino,Español,Macho,5,0,0,1,0,2,0,0,2,0,1,0,1,2,2,1,1
+10,Mosqueada,Español,Hembra,3,1,0,4,1,2,2,4,1,2,0,0,2,3,0,1,0
+11,Retinta,Iberoamericano,Hembra,6,0,0,0,1,1,0,2,3,0,0,0,0,0,2,2,0
+12,Rejonea,Iberoamericano,Hembra,15,1,0,0,0,3,1,0,0,1,0,2,2,4,2,0,0
+13,Precioso,Español,Macho,2,2,0,2,0,1,0,1,0,1,0,0,2,1,0,0,0
+14,Dinoso,Español,Macho,7,0,2,0,0,1,1,0,0,1,0,2,0,1,0,2,0
+15,Castaño,Español,Macho,12,2,0,0,0,2,0,0,0,1,0,1,2,1,3,3,2
+16,Simoneta,Español,Hembra,5,2,0,0,0,2,0,0,0,1,0,1,2,1,3,3,3
+17,Galanita,Español,Hembra,3,0,0,0,0,0,0,0,0,0,0,1,3,1,1,0,0
+18,Baraco,Iberoamericano,Macho,9,0,1,1,0,0,1,0,0,0,2,1,0,2,2,0,0
+19,Manguito,Criollo,Macho,20,1,0,2,1,2,0,2,0,0,0,0,2,0,2,1,2
+20,Telemaco,Iberoamericano,Macho,11,0,0,1,1,1,1,0,1,0,2,1,2,0,0,1,3
+21,Apresurada,Iberoamericano,Hembra,6,0,0,1,1,0,0,0,0,1,2,2,3,2,0,1,4
+22,Condesa,Paso costarricense ,Hembra,13,3,0,3,0,3,1,3,2,0,2,0,2,1,0,0,0
+23,Bonaparte,Español,Macho,10,2,0,2,0,2,0,0,0,0,1,2,3,2,0,2,4
+24,Amazónico,Iberoamericano,Macho,4,0,1,2,0,0,1,0,0,0,2,3,4,0,3,0,0
+25,Dantos,Iberoamericano,Macho,7,0,2,0,4,0,2,0,3,0,0,1,0,1,3,0,0
+26,Pandora,Iberoamericano,Hembra,10,1,0,1,1,1,0,1,2,0,1,0,2,0,2,2,1
+27,Mango,Cuarto de milla,Macho,14,1,1,2,2,1,1,1,0,0,0,2,1,3,3,2,0
+28,Enamorado,Cuarto de milla,Macho,10,0,2,0,2,0,2,0,0,1,0,0,0,1,1,0,0
+29,Uthred,Cuarto de milla,Macho,5,2,1,3,4,1,0,4,3,2,0,3,0,4,0,3,2
+30,Roso,Cuarto de milla,Macho,7,0,0,0,1,1,1,0,0,0,0,2,1,1,2,0,0
+31,Molinera,Iberoamericano ,Hembra,6,0,1,2,0,0,2,3,3,1,0,1,0,3,0,3,1
+32,Maraca,Iberoamericano,Hembra,4,1,0,1,0,2,0,0,0,0,1,2,0,2,2,2,0
+33,Carbonera,Iberoamericano,Hembra,4,2,2,2,2,1,2,2,3,2,1,2,1,2,2,2,2
+34,Rambla ,Iberoamericano,Hembra,2,0,1,0,0,0,1,0,0,0,2,0,0,1,0,2,0
+35,Nacuma ,Iberoamericano,Hembra,2,0,0,0,0,0,0,0,0,0,1,0,3,0,0,0,0
+36,Orocai,Iberoamericano,Macho,4,0,2,0,3,0,2,0,0,2,0,2,1,2,0,0,0
+37,Copeto,Español,Macho,7,1,1,2,1,0,2,1,0,1,2,3,3,2,1,4,2
+38,Noche,Warlander,Hembra,8,0,0,0,1,0,0,1,1,1,0,1,0,2,1,2,0
+39,Nube,Iberoamericano,Hembra,5,0,0,2,3,1,0,1,3,0,0,2,2,1,2,0,2
+40,Mosqueada 2,Ibero,Hembra,18,0,1,0,3,0,0,0,3,3,0,2,0,3,1,2,0
+41,Frisón ,Frisón,Macho,4,1,0,3,0,2,0,3,0,0,2,2,4,0,2,3,0
+42,Wrangler,Cuarto de milla,Macho,15,2,0,2,0,2,0,2,2,0,0,0,1,1,2,3,2
+43,Manchas,Cuarto de milla,Macho,8,0,1,0,0,0,2,0,0,0,0,1,0,2,0,0,2
+44,Roxie,Cuarto de milla,Hembra,4,0,0,0,0,1,0,0,2,0,0,1,0,1,0,1,0
+045,Espíritu,Iberoamericano,Macho,16,0,0,4,2,2,0,4,3,2,0,0,0,1,1,0,0
