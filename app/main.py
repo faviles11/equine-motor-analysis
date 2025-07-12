@@ -326,14 +326,12 @@ for c in df_vet.columns:
     if c.startswith("Cabeza_") or c.startswith("Pelvis_"):
         # Only non-PF columns as "before"
         if not ("PFL" in c or "PFC" in c):
-            # Try to find a matching "PFL..." or "PFC..." column
-            base = c.split("_", 1)[1]
-            after_pf = f"{c.split('_')[0]}_PFL{base[2:]}"
-            after_pc = f"{c.split('_')[0]}_PFC{base[2:]}"
-            if after_pf in df_vet.columns:
-                pairs[c] = after_pf
-            elif after_pc in df_vet.columns:
-                pairs[c] = after_pc
+            prefix, indicator = c.split("_", 1)
+            # Find any after column that starts with prefix + "_PF" and ends with indicator
+            for after in df_vet.columns:
+                if after.startswith(f"{prefix}_PF") and after.endswith(indicator):
+                    pairs[c] = after
+                    break  # Only take the first match
 
 diff_bins = ["=", "+", "++", "+++", "++++"]
 records = {}
