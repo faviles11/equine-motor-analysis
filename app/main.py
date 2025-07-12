@@ -208,23 +208,30 @@ kappas = {
 }
 
 kappa_df = pd.DataFrame.from_dict(kappas, orient="index", columns=["Kappa"])
+st.markdown("Esta tabla muestra el coeficiente Kappa de Cohen para cada parámetro de asimetría, comparando la evaluación del veterinario y el modelo de IA. Un valor más alto indica mayor acuerdo entre ambos.")
 st.dataframe(kappa_df)
+
+st.markdown("Este gráfico de barras visualiza el nivel de acuerdo (Kappa de Cohen) entre el veterinario y el modelo de IA para cada parámetro de asimetría.")
+st.bar_chart(kappa_df["Kappa"])
 
 # dashboards
 st.header("Dashboard de Acuerdos")
 
 # 3.1 cohen's kappa Bar chart 
 st.subheader("Kappa por Parámetro")
+st.markdown("Este gráfico de barras muestra nuevamente el nivel de acuerdo (Kappa de Cohen) entre el veterinario y el modelo de IA para cada parámetro de asimetría, facilitando la comparación visual.")
 st.bar_chart(kappa_df["Kappa"])
 
 # 3.2 discrepancies line chart
 st.subheader("Discrepancias Totales")
 diffs = (df_v[param_cols] - df_m[param_cols]).abs().stack()
+st.markdown("Este gráfico de líneas muestra la frecuencia de las discrepancias absolutas entre el veterinario y el modelo de IA para todos los parámetros, permitiendo identificar cuántos casos presentan diferencias de 0, 1, 2, etc.")
 st.line_chart(diffs.value_counts().sort_index())
 
 # 3.3 summary metrics
 st.subheader("Resumen Global")
 mean_kappa = kappa_df["Kappa"].mean()
+st.markdown("El valor mostrado representa el promedio del coeficiente Kappa de Cohen para todos los parámetros, brindando una visión global del nivel de acuerdo entre el veterinario y el modelo de IA.")
 st.metric("Kappa Medio", f"{mean_kappa:.2f}")
 
 # ───────────────────────────────────────────────────────────────────────────────
@@ -237,6 +244,7 @@ head_cols   = [c for c in param_cols if c.startswith("Cabeza_")]
 pelvis_cols = [c for c in param_cols if c.startswith("Pelvis_")]
 
 st.subheader("Indicadores más afectados por caballo")
+st.markdown("Esta tabla muestra, para cada caballo, cuál es el parámetro de asimetría de cabeza y pelvis más afectado según la evaluación veterinaria.")
 # finding the max indicator for each horse
 df_ind = pd.DataFrame({
     "Max_Indicador_Cabeza": df_vet[head_cols].idxmax(axis=1),
@@ -245,6 +253,7 @@ df_ind = pd.DataFrame({
 
 # 1. global frequency of indicators
 st.markdown("**Frecuencia global**")
+st.markdown("Estas tablas y gráficos presentan la frecuencia con la que cada parámetro de asimetría de cabeza y pelvis es el más afectado en la población analizada.")
 st.write("Cabeza:")
 freq_cabeza = df_ind["Max_Indicador_Cabeza"].value_counts()
 st.dataframe(freq_cabeza.to_frame("Frecuencia"))
@@ -257,6 +266,7 @@ st.bar_chart(freq_pelvis)
 
 # 1.1. race vs sex vs age
 st.subheader("Indicador más afectado vs Raza, Sexo y Edad")
+st.markdown("Estas tablas y gráficos muestran la distribución del parámetro más afectado según la raza, el sexo y el grupo de edad de los caballos, permitiendo identificar patrones en diferentes subgrupos.")
 df_meta = (
     df_vet.set_index("Caballo_ID")
           [["Raza","Sexo","Edad"]]
@@ -304,6 +314,7 @@ st.bar_chart(age_pelvis)
 
 # 2. frequency of qualitative variables
 st.subheader("Frecuencia de variables cualitativas")
+st.markdown("Estas tablas y gráficos muestran la frecuencia de aparición de cada valor en las variables cualitativas (raza, sexo, análisis clínico y condición corporal) en la base de datos veterinaria.")
 qual_cols = ["Raza","Sexo","Analisis_clinico","Condicion_Corporal"]
 for col in qual_cols:
     st.markdown(f"**{col}**")
@@ -314,6 +325,7 @@ for col in qual_cols:
 # augments distribution after flexion
 st.markdown("---")
 st.subheader("Distribución de aumentos tras flexión")
+st.markdown("Esta tabla y gráfico muestran la distribución de los aumentos en los parámetros de asimetría tras la flexión, clasificando los cambios en categorías de incremento ('+', '++', '+++', '++++'). Permite visualizar cuántos caballos presentan cada nivel de aumento en cada indicador.")
 
 before_cols = [
     c for c in df_vet.columns 
