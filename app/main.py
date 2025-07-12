@@ -311,3 +311,35 @@ for col in qual_cols:
     st.dataframe(vc.to_frame("Frecuencia"))
     st.bar_chart(vc)
 
+# augments distribution after flexion
+st.markdown("---")
+st.subheader("Distribución de aumentos tras flexión")
+
+before_cols = [
+    c for c in df_vet.columns 
+    if (c.startswith("Cabeza_") or c.startswith("Pelvis_")) 
+       and not c.startswith(("Cabeza_P","Pelvis_P"))
+]
+pairs = {
+    before: f"{before.split('_',1)[0]}_P{before.split('_',1)[1]}"
+    for before in before_cols
+    if f"{before.split('_',1)[0]}_P{before.split('_',1)[1]}" in df_vet.columns
+}
+
+diff_bins = ["=", "+", "++", "+++", "++++"]
+records = {}
+for before, after in pairs.items():
+    diff = df_vet[after] - df_vet[before]
+    counts = {
+        "=":   int((diff == 0).sum()),
+        "+":   int((diff == 1).sum()),
+        "++":  int((diff == 2).sum()),
+        "+++": int((diff == 3).sum()),
+        "++++":int((diff >= 4).sum()),
+    }
+    records[before] = counts
+
+df_diff = pd.DataFrame.from_dict(records, orient="index", columns=diff_bins)
+st.dataframe(df_diff)
+
+st.bar_chart(df_diff)
