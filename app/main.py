@@ -265,52 +265,44 @@ st.dataframe(freq_pelvis.to_frame("Frecuencia"))
 st.bar_chart(freq_pelvis)
 
 # 1.1. race vs sex vs age
-st.subheader("Indicador más afectado vs Raza, Sexo y Edad")
-st.markdown("Estas tablas y gráficos muestran la distribución del parámetro más afectado según la raza, el sexo y el grupo de edad de los caballos, permitiendo identificar patrones en diferentes subgrupos.")
+st.subheader("Indicador más afectado vs Raza y Edad")
+st.markdown("Las siguientes tablas muestran la cantidad de caballos por raza y por grupo de edad cuyo indicador más afectado es cada uno de los parámetros, tanto para cabeza como para pelvis.")
+
+# Construir df_meta correctamente antes de las tablas
+# Incluye Raza, Edad, Edad_grupo, Max_Indicador_Cabeza y Max_Indicador_Pelvis
 df_meta = (
     df_vet.set_index("Caballo_ID")
           [["Raza","Sexo","Edad"]]
           .copy()
 )
 df_meta[["Max_Indicador_Cabeza","Max_Indicador_Pelvis"]] = df_ind
+# Crear grupo de edad
+if "Edad_grupo" not in df_meta.columns:
+    df_meta["Edad_grupo"] = pd.cut(
+        df_meta["Edad"],
+        bins=[0,5,10,20,30,100],
+        labels=["0-5","6-10","11-20","21-30","31+"]
+    )
 
-# by race
-st.markdown("**Por Raza**")
-race_cabeza = df_meta.groupby(["Raza","Max_Indicador_Cabeza"]).size().unstack(fill_value=0)
-race_pelvis = df_meta.groupby(["Raza","Max_Indicador_Pelvis"]).size().unstack(fill_value=0)
-st.write("Cabeza:")
-st.dataframe(race_cabeza)
-st.bar_chart(race_cabeza)
-st.write("Pelvis:")
-st.dataframe(race_pelvis)
-st.bar_chart(race_pelvis)
+# Por Raza - Cabeza
+st.markdown("**Por Raza (Cabeza)**")
+tab_race_cabeza = pd.crosstab(df_meta["Raza"], df_meta["Max_Indicador_Cabeza"])
+st.dataframe(tab_race_cabeza)
 
-# by sex
-st.markdown("**Por Sexo**")
-sex_cabeza = df_meta.groupby(["Sexo","Max_Indicador_Cabeza"]).size().unstack(fill_value=0)
-sex_pelvis = df_meta.groupby(["Sexo","Max_Indicador_Pelvis"]).size().unstack(fill_value=0)
-st.write("Cabeza:")
-st.dataframe(sex_cabeza)
-st.bar_chart(sex_cabeza)
-st.write("Pelvis:")
-st.dataframe(sex_pelvis)
-st.bar_chart(sex_pelvis)
+# Por Raza - Pelvis
+st.markdown("**Por Raza (Pelvis)**")
+tab_race_pelvis = pd.crosstab(df_meta["Raza"], df_meta["Max_Indicador_Pelvis"])
+st.dataframe(tab_race_pelvis)
 
-# by age
-st.markdown("**Por Edad**")
-df_meta["Edad_grupo"] = pd.cut(
-    df_meta["Edad"],
-    bins=[0,5,10,20,30,100],
-    labels=["0-5","6-10","11-20","21-30","31+"]
-)
-age_cabeza = df_meta.groupby(["Edad_grupo","Max_Indicador_Cabeza"]).size().unstack(fill_value=0)
-age_pelvis = df_meta.groupby(["Edad_grupo","Max_Indicador_Pelvis"]).size().unstack(fill_value=0)
-st.write("Cabeza:")
-st.dataframe(age_cabeza)
-st.bar_chart(age_cabeza)
-st.write("Pelvis:")
-st.dataframe(age_pelvis)
-st.bar_chart(age_pelvis)
+# Por Edad - Cabeza
+st.markdown("**Por Grupo de Edad (Cabeza)**")
+tab_age_cabeza = pd.crosstab(df_meta["Edad_grupo"], df_meta["Max_Indicador_Cabeza"])
+st.dataframe(tab_age_cabeza)
+
+# Por Edad - Pelvis
+st.markdown("**Por Grupo de Edad (Pelvis)**")
+tab_age_pelvis = pd.crosstab(df_meta["Edad_grupo"], df_meta["Max_Indicador_Pelvis"])
+st.dataframe(tab_age_pelvis)
 
 # 2. frequency of qualitative variables
 st.subheader("Frecuencia de variables cualitativas")
