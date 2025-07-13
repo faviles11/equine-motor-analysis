@@ -286,21 +286,33 @@ if "Edad_grupo" not in df_meta.columns:
 
 # Por Raza - Cabeza
 st.markdown("**Por Raza (Cabeza)**")
+st.markdown("""
+Cada celda de esta tabla representa la cantidad de caballos de una raza específica cuyo parámetro de asimetría de cabeza más afectado es el indicado en la columna. Para cada caballo, se identifica el parámetro de cabeza con el valor más alto y se suma 1 en la celda correspondiente a su raza e indicador.
+""")
 tab_race_cabeza = pd.crosstab(df_meta["Raza"], df_meta["Max_Indicador_Cabeza"])
 st.dataframe(tab_race_cabeza)
 
 # Por Raza - Pelvis
 st.markdown("**Por Raza (Pelvis)**")
+st.markdown("""
+Cada celda de esta tabla representa la cantidad de caballos de una raza específica cuyo parámetro de asimetría de pelvis más afectado es el indicado en la columna. Para cada caballo, se identifica el parámetro de pelvis con el valor más alto y se suma 1 en la celda correspondiente a su raza e indicador.
+""")
 tab_race_pelvis = pd.crosstab(df_meta["Raza"], df_meta["Max_Indicador_Pelvis"])
 st.dataframe(tab_race_pelvis)
 
 # Por Edad - Cabeza
 st.markdown("**Por Grupo de Edad (Cabeza)**")
+st.markdown("""
+Cada celda de esta tabla representa la cantidad de caballos de un grupo de edad específico cuyo parámetro de asimetría de cabeza más afectado es el indicado en la columna. Para cada caballo, se identifica el parámetro de cabeza con el valor más alto y se suma 1 en la celda correspondiente a su grupo de edad e indicador.
+""")
 tab_age_cabeza = pd.crosstab(df_meta["Edad_grupo"], df_meta["Max_Indicador_Cabeza"])
 st.dataframe(tab_age_cabeza)
 
 # Por Edad - Pelvis
 st.markdown("**Por Grupo de Edad (Pelvis)**")
+st.markdown("""
+Cada celda de esta tabla representa la cantidad de caballos de un grupo de edad específico cuyo parámetro de asimetría de pelvis más afectado es el indicado en la columna. Para cada caballo, se identifica el parámetro de pelvis con el valor más alto y se suma 1 en la celda correspondiente a su grupo de edad e indicador.
+""")
 tab_age_pelvis = pd.crosstab(df_meta["Edad_grupo"], df_meta["Max_Indicador_Pelvis"])
 st.dataframe(tab_age_pelvis)
 
