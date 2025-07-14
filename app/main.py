@@ -329,34 +329,39 @@ for col in qual_cols:
 # augments distribution after flexion
 st.markdown("---")
 st.subheader("Distribución de aumentos tras flexión")
-st.markdown("Esta tabla y gráfico muestran la distribución de los aumentos en los parámetros de asimetría tras la flexión, clasificando los cambios en categorías de incremento ('+', '++', '+++', '++++'). Permite visualizar cuántos caballos presentan cada nivel de aumento en cada indicador.")
+st.markdown("Esta tabla y gráfico muestran la distribución de los cambios en los parámetros de asimetría tras la flexión, clasificando los cambios en categorías de incremento ('+', '++', '+++', '++++'), sin cambio ('='), y decremento ('-', '--', '---'). Permite visualizar cuántos caballos presentan cada nivel de cambio en cada indicador.")
 
 before_cols = [
     c for c in df_vet.columns 
     if (c.startswith("Cabeza_") or c.startswith("Pelvis_")) 
        and not c.startswith(("Cabeza_P","Pelvis_P"))
 ]
-# Find all before/after pairs based on your column naming
+# find all before/after pairs based on your column naming
 pairs = {}
 for c in df_vet.columns:
     if c.startswith("Cabeza_") or c.startswith("Pelvis_"):
-        # Only non-PF columns as "before"
+        # only non-PF columns as "before"
         if not ("PFL" in c or "PFC" in c):
             prefix, indicator = c.split("_", 1)
-            # Find any after column that starts with prefix + "_PF" and ends with indicator
+            # find any after column that starts with prefix + "_PF" and ends with indicator
             for after in df_vet.columns:
                 if after.startswith(f"{prefix}_PF") and after.endswith(indicator):
                     pairs[c] = after
-                    break  # Only take the first match
+                    break  # only take the first match
 
-diff_bins = ["=", "+", "++", "+++", "++++"]
+# add bins for decrements as well
+# order: '---', '--', '-', '=', '+', '++', '+++', '++++'
+diff_bins = ["----", "---", "--", "-", "=", "+", "++", "+++", "++++"]
 records = {}
 for before, after in pairs.items():
     diff = df_vet[after] - df_vet[before]
-    # Get indicator name (e.g., LRMD) and prefix (Cabeza/Pelvis)
     prefix, indicator = before.split("_", 1)
-    row_name = f"{prefix}_{indicator}"  # or just indicator if you want to aggregate
+    row_name = f"{prefix}_{indicator}"
     counts = {
+        "----": int((diff <= -4).sum()),
+        "---": int((diff == -3).sum()),
+        "--":  int((diff == -2).sum()),
+        "-":   int((diff == -1).sum()),
         "=":   int((diff == 0).sum()),
         "+":   int((diff == 1).sum()),
         "++":  int((diff == 2).sum()),
