@@ -12,6 +12,8 @@ from github import Github
 import pandas as pd
 from app.utils import load_data
 from sklearn.metrics import cohen_kappa_score
+import plotly.express as px
+from plotly.colors import sample_colorscale
 
 st.set_page_config(page_title="Análisis Motor Equino", layout="wide")
 
@@ -222,6 +224,13 @@ pelvis_cols = [c for c in param_cols if isinstance(c, str) and c.startswith("Pel
 kappa_head = cohen_kappa_score(df_v[head_cols].values.flatten(), df_m[head_cols].values.flatten())
 kappa_pelvis = cohen_kappa_score(df_v[pelvis_cols].values.flatten(), df_m[pelvis_cols].values.flatten())
 
+# Calculate Cohen's Kappa for LR (Linea Recta) and C (Círculo) indicators separately
+lr_cols = [c for c in param_cols if isinstance(c, str) and ("_LR" in c)]
+circulo_cols = [c for c in param_cols if isinstance(c, str) and ("_C" in c and not "_LR" in c)]
+
+kappa_lr = cohen_kappa_score(df_v[lr_cols].values.flatten(), df_m[lr_cols].values.flatten())
+kappa_circulo = cohen_kappa_score(df_v[circulo_cols].values.flatten(), df_m[circulo_cols].values.flatten())
+
 # 3.3 summary metrics
 mean_kappa = kappa_df["Kappa"].mean()
 
@@ -238,6 +247,13 @@ with col2:
 with col3:
     st.metric("Kappa Pelvis", f"{kappa_pelvis:.2f}")
 
+# Display Kappa LR and Kappa Círculo side by side
+col4, col5 = st.columns(2)
+with col4:
+    st.metric("Kappa LR", f"{kappa_lr:.2f}")
+with col5:  
+    st.metric("Kappa Círculo", f"{kappa_circulo:.2f}")
+
 # ───────────────────────────────────────────────────────────────────────────────
 # Análisis adicionales
 st.markdown("---")
@@ -247,71 +263,179 @@ st.header("Análisis Adicional")
 head_cols   = [c for c in param_cols if c.startswith("Cabeza_")]
 pelvis_cols = [c for c in param_cols if c.startswith("Pelvis_")]
 
+
+# ─────────────────────────────────────────────────────────────
 st.subheader("Indicadores más afectados por caballo")
-st.markdown("Esta tabla muestra, para cada caballo, cuál es el parámetro de asimetría de cabeza y pelvis más afectado según la evaluación veterinaria.")
-# finding the max indicator for each horse
-df_ind = pd.DataFrame({
+st.markdown("Esta sección muestra, para la población analizada, la frecuencia con la que cada parámetro de asimetría de cabeza y pelvis es el más afectado, separados para Veterinario y Modelo AI. Los gráficos de barras permiten comparar visualmente la prevalencia de cada indicador.")
+
+# VETERINARIO
+df_ind_vet = pd.DataFrame({
     "Max_Indicador_Cabeza": df_vet[head_cols].idxmax(axis=1),
     "Max_Indicador_Pelvis": df_vet[pelvis_cols].idxmax(axis=1)
 }, index=df_vet["Caballo_ID"])
+freq_cabeza_vet = df_ind_vet["Max_Indicador_Cabeza"].value_counts().sort_index()
+freq_pelvis_vet = df_ind_vet["Max_Indicador_Pelvis"].value_counts().sort_index()
 
-# 1. global frequency of indicators
-st.markdown("**Frecuencia global**")
-st.markdown("Estas tablas y gráficos presentan la frecuencia con la que cada parámetro de asimetría de cabeza y pelvis es el más afectado en la población analizada.")
-st.write("Cabeza:")
-freq_cabeza = df_ind["Max_Indicador_Cabeza"].value_counts()
-st.dataframe(freq_cabeza.to_frame("Frecuencia"))
-st.bar_chart(freq_cabeza)
+# MODELO AI
+df_ind_ai = pd.DataFrame({
+    "Max_Indicador_Cabeza": df_model[head_cols].idxmax(axis=1),
+    "Max_Indicador_Pelvis": df_model[pelvis_cols].idxmax(axis=1)
+}, index=df_model["Caballo_ID"])
+freq_cabeza_ai = df_ind_ai["Max_Indicador_Cabeza"].value_counts().sort_index()
+freq_pelvis_ai = df_ind_ai["Max_Indicador_Pelvis"].value_counts().sort_index()
 
-st.write("Pelvis:")
-freq_pelvis = df_ind["Max_Indicador_Pelvis"].value_counts()
-st.dataframe(freq_pelvis.to_frame("Frecuencia"))
-st.bar_chart(freq_pelvis)
+def get_gradual_colorscale(n, colorscale="Viridis"):
+    return {k: v for k, v in zip(range(n), sample_colorscale(colorscale, [i/(n-1) for i in range(n)]))}
+
+# VET charts
+color_cabeza_vet = get_gradual_colorscale(len(freq_cabeza_vet.index), "Viridis")
+fig_cabeza_vet = px.bar(
+    y=freq_cabeza_vet.index.tolist(),
+    x=freq_cabeza_vet.values,
+    color=freq_cabeza_vet.index.tolist(),
+    orientation='h',
+    color_discrete_map={k: color_cabeza_vet[i] for i, k in enumerate(freq_cabeza_vet.index.tolist())},
+    labels={"y": "Indicador de Cabeza", "x": "Frecuencia"},
+    title="Veterinario: Frecuencia de indicadores más afectados (Cabeza)"
+)
+color_pelvis_vet = get_gradual_colorscale(len(freq_pelvis_vet.index), "Viridis")
+fig_pelvis_vet = px.bar(
+    y=freq_pelvis_vet.index.tolist(),
+    x=freq_pelvis_vet.values,
+    color=freq_pelvis_vet.index.tolist(),
+    orientation='h',
+    color_discrete_map={k: color_pelvis_vet[i] for i, k in enumerate(freq_pelvis_vet.index.tolist())},
+    labels={"y": "Indicador de Pelvis", "x": "Frecuencia"},
+    title="Veterinario: Frecuencia de indicadores más afectados (Pelvis)"
+)
+
+# AI charts
+color_cabeza_ai = get_gradual_colorscale(len(freq_cabeza_ai.index), "Viridis")
+fig_cabeza_ai = px.bar(
+    y=freq_cabeza_ai.index.tolist(),
+    x=freq_cabeza_ai.values,
+    color=freq_cabeza_ai.index.tolist(),
+    orientation='h',
+    color_discrete_map={k: color_cabeza_ai[i] for i, k in enumerate(freq_cabeza_ai.index.tolist())},
+    labels={"y": "Indicador de Cabeza", "x": "Frecuencia"},
+    title="Modelo AI: Frecuencia de indicadores más afectados (Cabeza)"
+)
+color_pelvis_ai = get_gradual_colorscale(len(freq_pelvis_ai.index), "Viridis")
+fig_pelvis_ai = px.bar(
+    y=freq_pelvis_ai.index.tolist(),
+    x=freq_pelvis_ai.values,
+    color=freq_pelvis_ai.index.tolist(),
+    orientation='h',
+    color_discrete_map={k: color_pelvis_ai[i] for i, k in enumerate(freq_pelvis_ai.index.tolist())},
+    labels={"y": "Indicador de Pelvis", "x": "Frecuencia"},
+    title="Modelo AI: Frecuencia de indicadores más afectados (Pelvis)"
+)
+
+col_vet_cab, col_vet_pel = st.columns(2)
+with col_vet_cab:
+    st.plotly_chart(fig_cabeza_vet, use_container_width=True)
+with col_vet_pel:
+    st.plotly_chart(fig_pelvis_vet, use_container_width=True)
+
+col_ai_cab, col_ai_pel = st.columns(2)
+with col_ai_cab:
+    st.plotly_chart(fig_cabeza_ai, use_container_width=True)
+with col_ai_pel:
+    st.plotly_chart(fig_pelvis_ai, use_container_width=True)
 
 # 1.1. race vs sex vs age
-st.subheader("Indicador más afectado vs Raza y Edad")
-st.markdown("Las siguientes tablas muestran la cantidad de caballos por raza y por grupo de edad cuyo indicador más afectado es cada uno de los parámetros, tanto para cabeza como para pelvis.")
 
-df_meta = (
-    df_vet.set_index("Caballo_ID")
-          [["Raza","Sexo","Edad"]]
-          .copy()
+# ───────────────────────────────────────────────────────────────────────────────
+# Frecuencia de miembros más afectados por raza y sexo
+st.subheader("Frecuencia de miembros más afectados por raza y por sexo")
+st.markdown("Esta sección muestra la frecuencia con la que cada miembro (cabeza o pelvis) es el más afectado, agrupado por raza y por sexo, según la evaluación veterinaria. Los gráficos permiten comparar visualmente la prevalencia de cada miembro en cada grupo.")
+
+# Determinar miembro más afectado por caballo (cabeza vs pelvis)
+def miembro_mas_afectado(row):
+    cabeza_max = row[head_cols].max()
+    pelvis_max = row[pelvis_cols].max()
+    if cabeza_max > pelvis_max:
+        return "Cabeza"
+    elif pelvis_max > cabeza_max:
+        return "Pelvis"
+    else:
+        return "Empate"
+
+df_vet["Miembro_Mas_Afectado"] = df_vet.apply(miembro_mas_afectado, axis=1)
+
+
+
+# Frecuencia de miembro más afectado por raza (Veterinario)
+freq_raza_grouped = df_vet.groupby(["Raza", "Miembro_Mas_Afectado"]).size().reset_index(name="Frecuencia")
+fig_raza_grouped = px.bar(
+    freq_raza_grouped,
+    x="Raza",
+    y="Frecuencia",
+    color="Miembro_Mas_Afectado",
+    barmode="group",
+    color_discrete_map={"Cabeza": "#4682B4", "Pelvis": "#228B22", "Empate": "#FFD700"},
+    labels={"Raza": "Raza", "Frecuencia": "Frecuencia", "Miembro_Mas_Afectado": "Miembro"},
+    title="Frecuencia de miembro más afectado por raza (Veterinario)"
 )
-df_meta[["Max_Indicador_Cabeza","Max_Indicador_Pelvis"]] = df_ind
-if "Edad_grupo" not in df_meta.columns:
-    df_meta["Edad_grupo"] = pd.cut(
-        df_meta["Edad"],
-        bins=[0,5,10,20,30,100],
-        labels=["0-5","6-10","11-20","21-30","31+"]
-    )
+st.plotly_chart(fig_raza_grouped, use_container_width=True)
 
-st.markdown("**Por Raza (Cabeza)**")
-st.markdown("""
-Cada celda de esta tabla representa la cantidad de caballos de una raza específica cuyo parámetro de asimetría de cabeza más afectado es el indicado en la columna. Para cada caballo, se identifica el parámetro de cabeza con el valor más alto y se suma 1 en la celda correspondiente a su raza e indicador.
-""")
-tab_race_cabeza = pd.crosstab(df_meta["Raza"], df_meta["Max_Indicador_Cabeza"])
-st.dataframe(tab_race_cabeza)
+# Frecuencia de miembro más afectado por raza (Modelo AI)
+def miembro_mas_afectado_ai(row):
+    cabeza_max = row[head_cols].max()
+    pelvis_max = row[pelvis_cols].max()
+    if cabeza_max > pelvis_max:
+        return "Cabeza"
+    elif pelvis_max > cabeza_max:
+        return "Pelvis"
+    else:
+        return "Empate"
 
-st.markdown("**Por Raza (Pelvis)**")
-st.markdown("""
-Cada celda de esta tabla representa la cantidad de caballos de una raza específica cuyo parámetro de asimetría de pelvis más afectado es el indicado en la columna. Para cada caballo, se identifica el parámetro de pelvis con el valor más alto y se suma 1 en la celda correspondiente a su raza e indicador.
-""")
-tab_race_pelvis = pd.crosstab(df_meta["Raza"], df_meta["Max_Indicador_Pelvis"])
-st.dataframe(tab_race_pelvis)
+df_model["Miembro_Mas_Afectado"] = df_model.apply(miembro_mas_afectado_ai, axis=1)
+freq_raza_grouped_ai = df_model.groupby(["Raza", "Miembro_Mas_Afectado"]).size().reset_index(name="Frecuencia")
+fig_raza_grouped_ai = px.bar(
+    freq_raza_grouped_ai,
+    x="Raza",
+    y="Frecuencia",
+    color="Miembro_Mas_Afectado",
+    barmode="group",
+    color_discrete_map={"Cabeza": "#4682B4", "Pelvis": "#228B22", "Empate": "#FFD700"},
+    labels={"Raza": "Raza", "Frecuencia": "Frecuencia", "Miembro_Mas_Afectado": "Miembro"},
+    title="Frecuencia de miembro más afectado por raza (Modelo AI)"
+)
+st.plotly_chart(fig_raza_grouped_ai, use_container_width=True)
 
-st.markdown("**Por Grupo de Edad (Cabeza)**")
-st.markdown("""
-Cada celda de esta tabla representa la cantidad de caballos de un grupo de edad específico cuyo parámetro de asimetría de cabeza más afectado es el indicado en la columna. Para cada caballo, se identifica el parámetro de cabeza con el valor más alto y se suma 1 en la celda correspondiente a su grupo de edad e indicador.
-""")
-tab_age_cabeza = pd.crosstab(df_meta["Edad_grupo"], df_meta["Max_Indicador_Cabeza"])
-st.dataframe(tab_age_cabeza)
 
-st.markdown("**Por Grupo de Edad (Pelvis)**")
-st.markdown("""
-Cada celda de esta tabla representa la cantidad de caballos de un grupo de edad específico cuyo parámetro de asimetría de pelvis más afectado es el indicado en la columna. Para cada caballo, se identifica el parámetro de pelvis con el valor más alto y se suma 1 en la celda correspondiente a su grupo de edad e indicador.
-""")
-tab_age_pelvis = pd.crosstab(df_meta["Edad_grupo"], df_meta["Max_Indicador_Pelvis"])
-st.dataframe(tab_age_pelvis)
+# Frecuencia de miembro más afectado por sexo (Veterinario)
+freq_sexo_grouped_vet = df_vet.groupby(["Sexo", "Miembro_Mas_Afectado"]).size().reset_index(name="Frecuencia")
+fig_sexo_vet = px.bar(
+    freq_sexo_grouped_vet,
+    x="Sexo",
+    y="Frecuencia",
+    color="Miembro_Mas_Afectado",
+    barmode="group",
+    color_discrete_map={"Cabeza": "#4682B4", "Pelvis": "#228B22", "Empate": "#FFD700"},
+    labels={"Sexo": "Sexo", "Frecuencia": "Frecuencia", "Miembro_Mas_Afectado": "Miembro"},
+    title="Frecuencia de miembro más afectado por sexo (Veterinario)"
+)
+
+# Frecuencia de miembro más afectado por sexo (Modelo AI)
+freq_sexo_grouped_ai = df_model.groupby(["Sexo", "Miembro_Mas_Afectado"]).size().reset_index(name="Frecuencia")
+fig_sexo_ai = px.bar(
+    freq_sexo_grouped_ai,
+    x="Sexo",
+    y="Frecuencia",
+    color="Miembro_Mas_Afectado",
+    barmode="group",
+    color_discrete_map={"Cabeza": "#4682B4", "Pelvis": "#228B22", "Empate": "#FFD700"},
+    labels={"Sexo": "Sexo", "Frecuencia": "Frecuencia", "Miembro_Mas_Afectado": "Miembro"},
+    title="Frecuencia de miembro más afectado por sexo (Modelo AI)"
+)
+
+col_vet_sexo, col_ai_sexo = st.columns(2)
+with col_vet_sexo:
+    st.plotly_chart(fig_sexo_vet, use_container_width=True)
+with col_ai_sexo:
+    st.plotly_chart(fig_sexo_ai, use_container_width=True)
 
 # 2. frequency of qualitative variables
 st.subheader("Frecuencia de variables cualitativas")
@@ -369,24 +493,51 @@ for before, after in pairs.items():
 
 df_diff = pd.DataFrame.from_dict(records, orient="index", columns=diff_bins)
 st.dataframe(df_diff)
-st.bar_chart(df_diff)
+
+# Custom bar chart for augments distribution (Vet)
+color_map = {
+    "----": "#8B0000", # dark red
+    "---": "#B22222", # firebrick
+    "--": "#DC143C", # crimson
+    "-": "#FF6347", # tomato
+    "=": "#4682B4", # steel blue
+    "+": "#32CD32", # lime green
+    "++": "#228B22", # forest green
+    "+++": "#006400", # dark green
+    "++++": "#2E8B57", # sea green
+}
+
+vet_counts = df_diff.sum(axis=0)
+fig_vet = px.bar(
+    x=vet_counts.index,
+    y=vet_counts.values,
+    color=vet_counts.index,
+    color_discrete_map=color_map,
+    labels={"x": "Categoría", "y": "Frecuencia"},
+    title="Distribución total de aumentos tras flexión (Veterinario)"
+)
+st.plotly_chart(fig_vet, use_container_width=True)
 
 # --- ai model version ---
 st.subheader("Distribución de aumentos tras flexión (Modelo AI)")
 st.markdown("Esta tabla y gráfico muestran la distribución de los cambios en los parámetros de asimetría tras la flexión, clasificando los cambios en categorías de incremento ('+', '++', '+++', '++++'), sin cambio ('='), y decremento ('-', '--', '---', '----'). Permite visualizar cuántos caballos presentan cada nivel de cambio en cada indicador según el modelo de IA.")
 
-# use the same before/after pairs as above, but for df_model
-df_model_pairs = {}
+# find all before/after pairs based on your column naming
+pairs_model = {}
 for c in df_model.columns:
     if c.startswith("Cabeza_") or c.startswith("Pelvis_"):
+        # only non-PF columns as "before"
         if not ("PFL" in c or "PFC" in c):
             prefix, indicator = c.split("_", 1)
+            # find any after column that starts with prefix + "_PF" and ends with indicator
             for after in df_model.columns:
                 if after.startswith(f"{prefix}_PF") and after.endswith(indicator):
-                    df_model_pairs[c] = after
-                    break
+                    pairs_model[c] = after
+                    break  # only take the first match
+
+# add bins for decrements as well
 records_model = {}
-for before, after in df_model_pairs.items():
+for before, after in pairs_model.items():
     diff = df_model[after] - df_model[before]
     prefix, indicator = before.split("_", 1)
     row_name = f"{prefix}_{indicator}"
@@ -405,7 +556,18 @@ for before, after in df_model_pairs.items():
 
 df_diff_model = pd.DataFrame.from_dict(records_model, orient="index", columns=diff_bins)
 st.dataframe(df_diff_model)
-st.bar_chart(df_diff_model)
+
+# Custom bar chart for augments distribution (AI)
+ai_counts = df_diff_model.sum(axis=0)
+fig_ai = px.bar(
+    x=ai_counts.index,
+    y=ai_counts.values,
+    color=ai_counts.index,
+    color_discrete_map=color_map,
+    labels={"x": "Categoría", "y": "Frecuencia"},
+    title="Distribución total de aumentos tras flexión (Modelo AI)"
+)
+st.plotly_chart(fig_ai, use_container_width=True)
 
 # Resumen estadístico de variables cuantitativas
 st.subheader("Resumen estadístico de Edad y Condición Corporal")
@@ -431,3 +593,213 @@ stats_df = pd.DataFrame({
 
 st.dataframe(stats_df)
 st.markdown("E.E = Error estándar; D.E = Desviación estándar; Mín. = Mínimo; Máx. = Máximo")
+st.markdown("---")
+
+# FINAL: Bar charts for claudication counts per grade (1-5) for Vet and AI
+st.header("Resumen de calificaciones de claudicación (1-5)")
+st.markdown("Estos gráficos muestran la cantidad de veces que el veterinario y la IA asignaron cada grado de claudicación (1-5) en cualquier indicador.")
+
+# All indicator columns (head + pelvis)
+all_indic_cols = [c for c in df_vet.columns if c.startswith("Cabeza_") or c.startswith("Pelvis_")]
+
+# Flatten all grades for vet and AI
+vet_grades = df_vet[all_indic_cols].values.flatten()
+ai_grades = df_model[all_indic_cols].values.flatten()
+
+# Count occurrences of grades 1-5 (ignore 0 if present)
+vet_grade_counts = pd.Series(vet_grades).value_counts().sort_index()
+ai_grade_counts = pd.Series(ai_grades).value_counts().sort_index()
+
+# Only show grades 1-5
+
+claud_colors = {
+    1: "#8B0000",   # rojo oscuro
+    2: "#FF6347",  # tomate
+    3: "#FFD700",  # dorado
+    4: "#4682B4",  # azul acero
+    5: "#228B22",  # verde bosque
+}
+
+grades = [1,2,3,4,5]
+vet_grade_counts = vet_grade_counts.reindex(grades, fill_value=0)
+ai_grade_counts = ai_grade_counts.reindex(grades, fill_value=0)
+
+fig_vet_claud = px.bar(
+    x=vet_grade_counts.index,
+    y=vet_grade_counts.values,
+    color=vet_grade_counts.index,
+    color_discrete_map=claud_colors,
+    labels={"x": "Grado de claudicación", "y": "Frecuencia"},
+    title="Veterinario: cantidad de veces que se asignó cada grado"
+)
+fig_ai_claud = px.bar(
+    x=ai_grade_counts.index,
+    y=ai_grade_counts.values,
+    color=ai_grade_counts.index,
+    color_discrete_map=claud_colors,
+    labels={"x": "Grado de claudicación", "y": "Frecuencia"},
+    title="Modelo AI: cantidad de veces que se asignó cada grado"
+)
+
+col_vet, col_ai = st.columns(2)
+with col_vet:
+    st.plotly_chart(fig_vet_claud, use_container_width=True)
+with col_ai:
+    st.plotly_chart(fig_ai_claud, use_container_width=True)
+
+# ─────────────────────────────────────────────────────────────
+# Cantidad de alteraciones por cabeza vs pelvis (Vet y AI)
+st.markdown("---")
+st.header("Cantidad de alteraciones: Cabeza vs Pelvis")
+st.markdown("Estos gráficos muestran la cantidad total de alteraciones (valor >= 1) en todos los indicadores de cabeza y pelvis, separados para Veterinario y Modelo AI. Cada barra representa el total de veces que se detectó alguna alteración en los indicadores correspondientes.")
+
+# Definir columnas de cabeza y pelvis
+head_cols = [c for c in all_indic_cols if c.startswith("Cabeza_")]
+pelvis_cols = [c for c in all_indic_cols if c.startswith("Pelvis_")]
+
+# Veterinario: contar alteraciones (valor >=1) por cabeza y pelvis
+vet_head_alter = (df_vet[head_cols] >= 1).sum().sum()
+vet_pelvis_alter = (df_vet[pelvis_cols] >= 1).sum().sum()
+
+# Modelo AI: contar alteraciones (valor >=1) por cabeza y pelvis
+ai_head_alter = (df_model[head_cols] >= 1).sum().sum()
+ai_pelvis_alter = (df_model[pelvis_cols] >= 1).sum().sum()
+
+# Dataframes para graficar
+vet_alter_df = pd.DataFrame({
+    "Zona": ["Cabeza", "Pelvis"],
+    "Alteraciones": [vet_head_alter, vet_pelvis_alter]
+})
+ai_alter_df = pd.DataFrame({
+    "Zona": ["Cabeza", "Pelvis"],
+    "Alteraciones": [ai_head_alter, ai_pelvis_alter]
+})
+
+# Colores para barras
+zona_colors = {"Cabeza": "#4682B4", "Pelvis": "#228B22"}
+
+fig_vet_alter = px.bar(
+    vet_alter_df,
+    x="Zona",
+    y="Alteraciones",
+    color="Zona",
+    color_discrete_map=zona_colors,
+    labels={"Zona": "Zona", "Alteraciones": "Cantidad de alteraciones"},
+    title="Veterinario: cantidad total de alteraciones (valor >= 1)"
+)
+fig_ai_alter = px.bar(
+    ai_alter_df,
+    x="Zona",
+    y="Alteraciones",
+    color="Zona",
+    color_discrete_map=zona_colors,
+    labels={"Zona": "Zona", "Alteraciones": "Cantidad de alteraciones"},
+    title="Modelo AI: cantidad total de alteraciones (valor >= 1)"
+)
+
+col_vet_alter, col_ai_alter = st.columns(2)
+with col_vet_alter:
+    st.plotly_chart(fig_vet_alter, use_container_width=True)
+with col_ai_alter:
+    st.plotly_chart(fig_ai_alter, use_container_width=True)
+
+# ─────────────────────────────────────────────────────────────
+# Cantidad de alteraciones por cabeza/pelvis, divididas por raza y sexo (Vet y AI)
+st.markdown("---")
+st.header("Cantidad de alteraciones por Cabeza/Pelvis, divididas por Raza y Sexo")
+st.markdown("Estos gráficos muestran la cantidad total de alteraciones (valor >= 1) en todos los indicadores de cabeza y pelvis, agrupadas por raza y por sexo, para Veterinario y Modelo AI.")
+
+# Por Raza
+## Veterinario
+vet_alter_raza = []
+for raza, group in df_vet.groupby("Raza"):
+    head_alter = (group[head_cols] >= 1).sum().sum()
+    pelvis_alter = (group[pelvis_cols] >= 1).sum().sum()
+    vet_alter_raza.append({"Raza": raza, "Zona": "Cabeza", "Alteraciones": head_alter})
+    vet_alter_raza.append({"Raza": raza, "Zona": "Pelvis", "Alteraciones": pelvis_alter})
+vet_alter_raza_df = pd.DataFrame(vet_alter_raza)
+
+fig_vet_alter_raza = px.bar(
+    vet_alter_raza_df,
+    x="Raza",
+    y="Alteraciones",
+    color="Zona",
+    barmode="group",
+    color_discrete_map=zona_colors,
+    labels={"Raza": "Raza", "Alteraciones": "Cantidad de alteraciones"},
+    title="Veterinario: alteraciones por raza"
+)
+
+## Modelo AI
+ai_alter_raza = []
+for raza, group in df_model.groupby("Raza"):
+    head_alter = (group[head_cols] >= 1).sum().sum()
+    pelvis_alter = (group[pelvis_cols] >= 1).sum().sum()
+    ai_alter_raza.append({"Raza": raza, "Zona": "Cabeza", "Alteraciones": head_alter})
+    ai_alter_raza.append({"Raza": raza, "Zona": "Pelvis", "Alteraciones": pelvis_alter})
+ai_alter_raza_df = pd.DataFrame(ai_alter_raza)
+
+fig_ai_alter_raza = px.bar(
+    ai_alter_raza_df,
+    x="Raza",
+    y="Alteraciones",
+    color="Zona",
+    barmode="group",
+    color_discrete_map=zona_colors,
+    labels={"Raza": "Raza", "Alteraciones": "Cantidad de alteraciones"},
+    title="Modelo AI: alteraciones por raza"
+)
+
+col_vet_raza, col_ai_raza = st.columns(2)
+with col_vet_raza:
+    st.plotly_chart(fig_vet_alter_raza, use_container_width=True)
+with col_ai_raza:
+    st.plotly_chart(fig_ai_alter_raza, use_container_width=True)
+
+# Por Sexo
+## Veterinario
+vet_alter_sexo = []
+for sexo, group in df_vet.groupby("Sexo"):
+    head_alter = (group[head_cols] >= 1).sum().sum()
+    pelvis_alter = (group[pelvis_cols] >= 1).sum().sum()
+    vet_alter_sexo.append({"Sexo": sexo, "Zona": "Cabeza", "Alteraciones": head_alter})
+    vet_alter_sexo.append({"Sexo": sexo, "Zona": "Pelvis", "Alteraciones": pelvis_alter})
+vet_alter_sexo_df = pd.DataFrame(vet_alter_sexo)
+
+fig_vet_alter_sexo = px.bar(
+    vet_alter_sexo_df,
+    x="Sexo",
+    y="Alteraciones",
+    color="Zona",
+    barmode="group",
+    color_discrete_map=zona_colors,
+    labels={"Sexo": "Sexo", "Alteraciones": "Cantidad de alteraciones"},
+    title="Veterinario: alteraciones por sexo"
+)
+
+## Modelo AI
+ai_alter_sexo = []
+for sexo, group in df_model.groupby("Sexo"):
+    head_alter = (group[head_cols] >= 1).sum().sum()
+    pelvis_alter = (group[pelvis_cols] >= 1).sum().sum()
+    ai_alter_sexo.append({"Sexo": sexo, "Zona": "Cabeza", "Alteraciones": head_alter})
+    ai_alter_sexo.append({"Sexo": sexo, "Zona": "Pelvis", "Alteraciones": pelvis_alter})
+ai_alter_sexo_df = pd.DataFrame(ai_alter_sexo)
+
+fig_ai_alter_sexo = px.bar(
+    ai_alter_sexo_df,
+    x="Sexo",
+    y="Alteraciones",
+    color="Zona",
+    barmode="group",
+    color_discrete_map=zona_colors,
+    labels={"Sexo": "Sexo", "Alteraciones": "Cantidad de alteraciones"},
+    title="Modelo AI: alteraciones por sexo"
+)
+
+col_vet_sexo_alter, col_ai_sexo_alter = st.columns(2)
+with col_vet_sexo_alter:
+    st.plotly_chart(fig_vet_alter_sexo, use_container_width=True)
+with col_ai_sexo_alter:
+    st.plotly_chart(fig_ai_alter_sexo, use_container_width=True)
+
