@@ -1,5 +1,6 @@
 # app/main.py
 
+import numpy as np
 import os, sys
 
 # parent directory to python path
@@ -268,15 +269,12 @@ st.bar_chart(freq_pelvis)
 st.subheader("Indicador más afectado vs Raza y Edad")
 st.markdown("Las siguientes tablas muestran la cantidad de caballos por raza y por grupo de edad cuyo indicador más afectado es cada uno de los parámetros, tanto para cabeza como para pelvis.")
 
-# Construir df_meta correctamente antes de las tablas
-# Incluye Raza, Edad, Edad_grupo, Max_Indicador_Cabeza y Max_Indicador_Pelvis
 df_meta = (
     df_vet.set_index("Caballo_ID")
           [["Raza","Sexo","Edad"]]
           .copy()
 )
 df_meta[["Max_Indicador_Cabeza","Max_Indicador_Pelvis"]] = df_ind
-# Crear grupo de edad
 if "Edad_grupo" not in df_meta.columns:
     df_meta["Edad_grupo"] = pd.cut(
         df_meta["Edad"],
@@ -284,7 +282,6 @@ if "Edad_grupo" not in df_meta.columns:
         labels=["0-5","6-10","11-20","21-30","31+"]
     )
 
-# Por Raza - Cabeza
 st.markdown("**Por Raza (Cabeza)**")
 st.markdown("""
 Cada celda de esta tabla representa la cantidad de caballos de una raza específica cuyo parámetro de asimetría de cabeza más afectado es el indicado en la columna. Para cada caballo, se identifica el parámetro de cabeza con el valor más alto y se suma 1 en la celda correspondiente a su raza e indicador.
@@ -292,7 +289,6 @@ Cada celda de esta tabla representa la cantidad de caballos de una raza específ
 tab_race_cabeza = pd.crosstab(df_meta["Raza"], df_meta["Max_Indicador_Cabeza"])
 st.dataframe(tab_race_cabeza)
 
-# Por Raza - Pelvis
 st.markdown("**Por Raza (Pelvis)**")
 st.markdown("""
 Cada celda de esta tabla representa la cantidad de caballos de una raza específica cuyo parámetro de asimetría de pelvis más afectado es el indicado en la columna. Para cada caballo, se identifica el parámetro de pelvis con el valor más alto y se suma 1 en la celda correspondiente a su raza e indicador.
@@ -300,7 +296,6 @@ Cada celda de esta tabla representa la cantidad de caballos de una raza específ
 tab_race_pelvis = pd.crosstab(df_meta["Raza"], df_meta["Max_Indicador_Pelvis"])
 st.dataframe(tab_race_pelvis)
 
-# Por Edad - Cabeza
 st.markdown("**Por Grupo de Edad (Cabeza)**")
 st.markdown("""
 Cada celda de esta tabla representa la cantidad de caballos de un grupo de edad específico cuyo parámetro de asimetría de cabeza más afectado es el indicado en la columna. Para cada caballo, se identifica el parámetro de cabeza con el valor más alto y se suma 1 en la celda correspondiente a su grupo de edad e indicador.
@@ -308,7 +303,6 @@ Cada celda de esta tabla representa la cantidad de caballos de un grupo de edad 
 tab_age_cabeza = pd.crosstab(df_meta["Edad_grupo"], df_meta["Max_Indicador_Cabeza"])
 st.dataframe(tab_age_cabeza)
 
-# Por Edad - Pelvis
 st.markdown("**Por Grupo de Edad (Pelvis)**")
 st.markdown("""
 Cada celda de esta tabla representa la cantidad de caballos de un grupo de edad específico cuyo parámetro de asimetría de pelvis más afectado es el indicado en la columna. Para cada caballo, se identifica el parámetro de pelvis con el valor más alto y se suma 1 en la celda correspondiente a su grupo de edad e indicador.
@@ -374,11 +368,11 @@ df_diff = pd.DataFrame.from_dict(records, orient="index", columns=diff_bins)
 st.dataframe(df_diff)
 st.bar_chart(df_diff)
 
-# --- AI Model version ---
+# --- ai model version ---
 st.subheader("Distribución de aumentos tras flexión (Modelo AI)")
 st.markdown("Esta tabla y gráfico muestran la distribución de los cambios en los parámetros de asimetría tras la flexión, clasificando los cambios en categorías de incremento ('+', '++', '+++', '++++'), sin cambio ('='), y decremento ('-', '--', '---', '----'). Permite visualizar cuántos caballos presentan cada nivel de cambio en cada indicador según el modelo de IA.")
 
-# Use the same before/after pairs as above, but for df_model
+# use the same before/after pairs as above, but for df_model
 df_model_pairs = {}
 for c in df_model.columns:
     if c.startswith("Cabeza_") or c.startswith("Pelvis_"):
@@ -409,3 +403,28 @@ for before, after in df_model_pairs.items():
 df_diff_model = pd.DataFrame.from_dict(records_model, orient="index", columns=diff_bins)
 st.dataframe(df_diff_model)
 st.bar_chart(df_diff_model)
+
+# Resumen estadístico de variables cuantitativas
+st.subheader("Resumen estadístico de Edad y Condición Corporal")
+st.markdown("Esta tabla muestra la media, error estándar, desviación estándar, valor mínimo y máximo para las variables cuantitativas Edad y Condición Corporal en la base de datos veterinaria.")
+
+def resumen_stats(serie):
+    return pd.Series({
+        "Media": np.mean(serie),
+        "E.E": np.std(serie, ddof=1) / np.sqrt(len(serie)),
+        "D.E": np.std(serie, ddof=1),
+        "Mín.": np.min(serie),
+        "Máx.": np.max(serie)
+    })
+
+# Convert Condicion Corporal to numeric if needed
+cond_col = df_vet["Condicion_Corporal"].replace({',':'.'}, regex=True)
+cond_col = pd.to_numeric(cond_col, errors='coerce')
+
+stats_df = pd.DataFrame({
+    "Edad": resumen_stats(df_vet["Edad"]),
+    "Condición corporal": resumen_stats(cond_col)
+}).T
+
+st.dataframe(stats_df)
+st.markdown("E.E = Error estándar; D.E = Desviación estándar; Mín. = Mínimo; Máx. = Máximo")
