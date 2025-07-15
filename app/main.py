@@ -215,25 +215,28 @@ st.dataframe(kappa_df)
 st.markdown("Este gráfico de barras visualiza el nivel de acuerdo (Kappa de Cohen) entre el veterinario y el modelo de IA para cada parámetro de asimetría.")
 st.bar_chart(kappa_df["Kappa"])
 
-# dashboards
-st.header("Dashboard de Acuerdos")
+# Calculate Cohen's Kappa for Head and Pelvis separately
+head_cols   = [c for c in param_cols if isinstance(c, str) and c.startswith("Cabeza_")]
+pelvis_cols = [c for c in param_cols if isinstance(c, str) and c.startswith("Pelvis_")]
 
-# 3.1 cohen's kappa Bar chart 
-st.subheader("Kappa por Parámetro")
-st.markdown("Este gráfico de barras muestra nuevamente el nivel de acuerdo (Kappa de Cohen) entre el veterinario y el modelo de IA para cada parámetro de asimetría, facilitando la comparación visual.")
-st.bar_chart(kappa_df["Kappa"])
-
-# 3.2 discrepancies line chart
-st.subheader("Discrepancias Totales")
-diffs = (df_v[param_cols] - df_m[param_cols]).abs().stack()
-st.markdown("Este gráfico de líneas muestra la frecuencia de las discrepancias absolutas entre el veterinario y el modelo de IA para todos los parámetros, permitiendo identificar cuántos casos presentan diferencias de 0, 1, 2, etc.")
-st.line_chart(diffs.value_counts().sort_index())
+kappa_head = cohen_kappa_score(df_v[head_cols].values.flatten(), df_m[head_cols].values.flatten())
+kappa_pelvis = cohen_kappa_score(df_v[pelvis_cols].values.flatten(), df_m[pelvis_cols].values.flatten())
 
 # 3.3 summary metrics
+mean_kappa = kappa_df["Kappa"].mean()
+
 st.subheader("Resumen Global")
 mean_kappa = kappa_df["Kappa"].mean()
 st.markdown("El valor mostrado representa el promedio del coeficiente Kappa de Cohen para todos los parámetros, brindando una visión global del nivel de acuerdo entre el veterinario y el modelo de IA.")
-st.metric("Kappa Medio", f"{mean_kappa:.2f}")
+
+# Display Kappa Medio, Kappa Cabeza, and Kappa Pelvis side by side
+col1, col2, col3 = st.columns(3)
+with col1:
+    st.metric("Kappa Medio", f"{mean_kappa:.2f}")
+with col2:
+    st.metric("Kappa Cabeza", f"{kappa_head:.2f}")
+with col3:
+    st.metric("Kappa Pelvis", f"{kappa_pelvis:.2f}")
 
 # ───────────────────────────────────────────────────────────────────────────────
 # Análisis adicionales
