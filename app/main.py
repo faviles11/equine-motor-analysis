@@ -328,8 +328,8 @@ for col in qual_cols:
 
 # augments distribution after flexion
 st.markdown("---")
-st.subheader("Distribución de aumentos tras flexión")
-st.markdown("Esta tabla y gráfico muestran la distribución de los cambios en los parámetros de asimetría tras la flexión, clasificando los cambios en categorías de incremento ('+', '++', '+++', '++++'), sin cambio ('='), y decremento ('-', '--', '---'). Permite visualizar cuántos caballos presentan cada nivel de cambio en cada indicador.")
+st.subheader("Distribución de aumentos tras flexión (Veterinario)")
+st.markdown("Esta tabla y gráfico muestran la distribución de los cambios en los parámetros de asimetría tras la flexión, clasificando los cambios en categorías de incremento ('+', '++', '+++', '++++'), sin cambio ('='), y decremento ('-', '--', '---', '----'). Permite visualizar cuántos caballos presentan cada nivel de cambio en cada indicador según la evaluación veterinaria.")
 
 before_cols = [
     c for c in df_vet.columns 
@@ -358,7 +358,7 @@ for before, after in pairs.items():
     prefix, indicator = before.split("_", 1)
     row_name = f"{prefix}_{indicator}"
     counts = {
-        "----": int((diff <= -4).sum()),
+        "----":int((diff <= -4).sum()),
         "---": int((diff == -3).sum()),
         "--":  int((diff == -2).sum()),
         "-":   int((diff == -1).sum()),
@@ -372,5 +372,40 @@ for before, after in pairs.items():
 
 df_diff = pd.DataFrame.from_dict(records, orient="index", columns=diff_bins)
 st.dataframe(df_diff)
-
 st.bar_chart(df_diff)
+
+# --- AI Model version ---
+st.subheader("Distribución de aumentos tras flexión (Modelo AI)")
+st.markdown("Esta tabla y gráfico muestran la distribución de los cambios en los parámetros de asimetría tras la flexión, clasificando los cambios en categorías de incremento ('+', '++', '+++', '++++'), sin cambio ('='), y decremento ('-', '--', '---', '----'). Permite visualizar cuántos caballos presentan cada nivel de cambio en cada indicador según el modelo de IA.")
+
+# Use the same before/after pairs as above, but for df_model
+df_model_pairs = {}
+for c in df_model.columns:
+    if c.startswith("Cabeza_") or c.startswith("Pelvis_"):
+        if not ("PFL" in c or "PFC" in c):
+            prefix, indicator = c.split("_", 1)
+            for after in df_model.columns:
+                if after.startswith(f"{prefix}_PF") and after.endswith(indicator):
+                    df_model_pairs[c] = after
+                    break
+records_model = {}
+for before, after in df_model_pairs.items():
+    diff = df_model[after] - df_model[before]
+    prefix, indicator = before.split("_", 1)
+    row_name = f"{prefix}_{indicator}"
+    counts = {
+        "----":int((diff <= -4).sum()),
+        "---": int((diff == -3).sum()),
+        "--":  int((diff == -2).sum()),
+        "-":   int((diff == -1).sum()),
+        "=":   int((diff == 0).sum()),
+        "+":   int((diff == 1).sum()),
+        "++":  int((diff == 2).sum()),
+        "+++": int((diff == 3).sum()),
+        "++++":int((diff >= 4).sum()),
+    }
+    records_model[row_name] = counts
+
+df_diff_model = pd.DataFrame.from_dict(records_model, orient="index", columns=diff_bins)
+st.dataframe(df_diff_model)
+st.bar_chart(df_diff_model)
