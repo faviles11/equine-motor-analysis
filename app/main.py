@@ -222,6 +222,13 @@ pelvis_cols = [c for c in param_cols if isinstance(c, str) and c.startswith("Pel
 kappa_head = cohen_kappa_score(df_v[head_cols].values.flatten(), df_m[head_cols].values.flatten())
 kappa_pelvis = cohen_kappa_score(df_v[pelvis_cols].values.flatten(), df_m[pelvis_cols].values.flatten())
 
+# Calculate Cohen's Kappa for LR (Linea Recta) and C (Círculo) indicators separately
+lr_cols = [c for c in param_cols if isinstance(c, str) and ("_LR" in c)]
+circulo_cols = [c for c in param_cols if isinstance(c, str) and ("_C" in c and not "_LR" in c)]
+
+kappa_lr = cohen_kappa_score(df_v[lr_cols].values.flatten(), df_m[lr_cols].values.flatten())
+kappa_circulo = cohen_kappa_score(df_v[circulo_cols].values.flatten(), df_m[circulo_cols].values.flatten())
+
 # 3.3 summary metrics
 mean_kappa = kappa_df["Kappa"].mean()
 
@@ -237,6 +244,13 @@ with col2:
     st.metric("Kappa Cabeza", f"{kappa_head:.2f}")
 with col3:
     st.metric("Kappa Pelvis", f"{kappa_pelvis:.2f}")
+
+# Display Kappa LR and Kappa Círculo side by side
+col4, col5 = st.columns(2)
+with col4:
+    st.metric("Kappa LR", f"{kappa_lr:.2f}")
+with col5:  
+    st.metric("Kappa Círculo", f"{kappa_circulo:.2f}")
 
 # ───────────────────────────────────────────────────────────────────────────────
 # Análisis adicionales
