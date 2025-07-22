@@ -648,35 +648,31 @@ with col_ai:
     st.plotly_chart(fig_ai_claud, use_container_width=True)
 
 # ─────────────────────────────────────────────────────────────
-# Cantidad de alteraciones por cabeza vs pelvis (Vet y AI)
 st.markdown("---")
 st.header("Cantidad de alteraciones: Cabeza vs Pelvis")
 st.markdown("Estos gráficos muestran la cantidad total de alteraciones (valor >= 1) en todos los indicadores de cabeza y pelvis, separados para Veterinario y Modelo AI. Cada barra representa el total de veces que se detectó alguna alteración en los indicadores correspondientes.")
 
-# Definir columnas de cabeza y pelvis
 head_cols = [c for c in all_indic_cols if c.startswith("Cabeza_")]
 pelvis_cols = [c for c in all_indic_cols if c.startswith("Pelvis_")]
 
-# Veterinario: contar alteraciones (valor >=1) por cabeza y pelvis
 vet_head_alter = (df_vet[head_cols] >= 1).sum().sum()
 vet_pelvis_alter = (df_vet[pelvis_cols] >= 1).sum().sum()
 
-# Modelo AI: contar alteraciones (valor >=1) por cabeza y pelvis
 ai_head_alter = (df_model[head_cols] >= 1).sum().sum()
 ai_pelvis_alter = (df_model[pelvis_cols] >= 1).sum().sum()
 
 # Dataframes para graficar
 vet_alter_df = pd.DataFrame({
-    "Zona": ["Cabeza", "Pelvis"],
+    "Zona": ["Miembro Anterior", "Miembro Posterior"],
     "Alteraciones": [vet_head_alter, vet_pelvis_alter]
 })
 ai_alter_df = pd.DataFrame({
-    "Zona": ["Cabeza", "Pelvis"],
+    "Zona": ["Miembro Anterior", "Miembro Posterior"],
     "Alteraciones": [ai_head_alter, ai_pelvis_alter]
 })
 
 # Colores para barras
-zona_colors = {"Cabeza": "#4682B4", "Pelvis": "#228B22"}
+zona_colors = {"Miembro Anterior": "#4682B4", "Miembro Posterior": "#228B22"}
 
 fig_vet_alter = px.bar(
     vet_alter_df,
@@ -715,8 +711,8 @@ vet_alter_raza = []
 for raza, group in df_vet.groupby("Raza"):
     head_alter = (group[head_cols] >= 1).sum().sum()
     pelvis_alter = (group[pelvis_cols] >= 1).sum().sum()
-    vet_alter_raza.append({"Raza": raza, "Zona": "Cabeza", "Alteraciones": head_alter})
-    vet_alter_raza.append({"Raza": raza, "Zona": "Pelvis", "Alteraciones": pelvis_alter})
+    vet_alter_raza.append({"Raza": raza, "Zona": "Miembro Anterior", "Alteraciones": head_alter})
+    vet_alter_raza.append({"Raza": raza, "Zona": "Miembro Posterior", "Alteraciones": pelvis_alter})
 vet_alter_raza_df = pd.DataFrame(vet_alter_raza)
 
 fig_vet_alter_raza = px.bar(
@@ -735,8 +731,8 @@ ai_alter_raza = []
 for raza, group in df_model.groupby("Raza"):
     head_alter = (group[head_cols] >= 1).sum().sum()
     pelvis_alter = (group[pelvis_cols] >= 1).sum().sum()
-    ai_alter_raza.append({"Raza": raza, "Zona": "Cabeza", "Alteraciones": head_alter})
-    ai_alter_raza.append({"Raza": raza, "Zona": "Pelvis", "Alteraciones": pelvis_alter})
+    ai_alter_raza.append({"Raza": raza, "Zona": "Miembro Anterior", "Alteraciones": head_alter})
+    ai_alter_raza.append({"Raza": raza, "Zona": "Miembro Posterior", "Alteraciones": pelvis_alter})
 ai_alter_raza_df = pd.DataFrame(ai_alter_raza)
 
 fig_ai_alter_raza = px.bar(
@@ -762,8 +758,8 @@ vet_alter_sexo = []
 for sexo, group in df_vet.groupby("Sexo"):
     head_alter = (group[head_cols] >= 1).sum().sum()
     pelvis_alter = (group[pelvis_cols] >= 1).sum().sum()
-    vet_alter_sexo.append({"Sexo": sexo, "Zona": "Cabeza", "Alteraciones": head_alter})
-    vet_alter_sexo.append({"Sexo": sexo, "Zona": "Pelvis", "Alteraciones": pelvis_alter})
+    vet_alter_sexo.append({"Sexo": sexo, "Zona": "Miembro Anterior", "Alteraciones": head_alter})
+    vet_alter_sexo.append({"Sexo": sexo, "Zona": "Miembro Posterior", "Alteraciones": pelvis_alter})
 vet_alter_sexo_df = pd.DataFrame(vet_alter_sexo)
 
 fig_vet_alter_sexo = px.bar(
@@ -782,8 +778,8 @@ ai_alter_sexo = []
 for sexo, group in df_model.groupby("Sexo"):
     head_alter = (group[head_cols] >= 1).sum().sum()
     pelvis_alter = (group[pelvis_cols] >= 1).sum().sum()
-    ai_alter_sexo.append({"Sexo": sexo, "Zona": "Cabeza", "Alteraciones": head_alter})
-    ai_alter_sexo.append({"Sexo": sexo, "Zona": "Pelvis", "Alteraciones": pelvis_alter})
+    ai_alter_sexo.append({"Sexo": sexo, "Zona": "Miembro Anterior", "Alteraciones": head_alter})
+    ai_alter_sexo.append({"Sexo": sexo, "Zona": "Miembro Posterior", "Alteraciones": pelvis_alter})
 ai_alter_sexo_df = pd.DataFrame(ai_alter_sexo)
 
 fig_ai_alter_sexo = px.bar(
@@ -802,4 +798,42 @@ with col_vet_sexo_alter:
     st.plotly_chart(fig_vet_alter_sexo, use_container_width=True)
 with col_ai_sexo_alter:
     st.plotly_chart(fig_ai_alter_sexo, use_container_width=True)
+
+# ─────────────────────────────────────────────────────────────
+st.markdown("---")
+
+col_text, col_plot = st.columns([1, 2]) 
+
+with col_text:
+    st.header("Concordancia de Cohen Promedio")
+    st.markdown("""
+    Este gráfico compara la **concordancia promedio (0 a 1)** entre el 
+    veterinario y el modelo de IA para:
+    - **Miembros Anteriores (Cabeza)**
+    - **Miembros Posteriores (Pelvis)**
+    """)
+
+with col_plot:
+    kappa_avg_df = pd.DataFrame({
+        "Zona": ["Miembros Anteriores", "Miembros Posteriores"],
+        "Kappa Promedio": [kappa_head, kappa_pelvis]
+    })
+
+    kappa_colors = {
+        "Miembros Anteriores": "#4682B4",
+        "Miembros Posteriores": "#228B22"
+    }
+
+    fig_kappa_avg = px.bar(
+        kappa_avg_df,
+        x="Zona",
+        y="Kappa Promedio",
+        color="Zona",
+        color_discrete_map=kappa_colors,
+        labels={"Zona": "Zona", "Kappa Promedio": "Cohen's Kappa (Promedio)"},
+        title="Concordancia (0 a 1)"
+    )
+
+    st.plotly_chart(fig_kappa_avg, use_container_width=True)
+
 
