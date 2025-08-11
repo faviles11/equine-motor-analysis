@@ -852,7 +852,25 @@ Se calcula la tasa de verdaderos positivos (**VP**, sensibilidad) y verdaderos n
 - **VN (Verdaderos negativos):** El modelo AI detecta normalidad y el veterinario también.
 - **FP (Falsos positivos):** El modelo AI detecta alteración pero el veterinario no.
 - **FN (Falsos negativos):** El modelo AI detecta normalidad pero el veterinario detecta alteración.
-""")
+
+---
+### Fórmulas utilizadas
+
+<div style="font-size: 1.1em">
+<b>VP</b> = Número de casos donde <b>AI ≥ 1</b> y <b>Vet ≥ 1</b><br>
+<b>VN</b> = Número de casos donde <b>AI = 0</b> y <b>Vet = 0</b><br>
+<b>FP</b> = Número de casos donde <b>AI ≥ 1</b> y <b>Vet = 0</b><br>
+<b>FN</b> = Número de casos donde <b>AI = 0</b> y <b>Vet ≥ 1</b><br>
+<br>
+<b>Tasa de VP (Sensibilidad)</b> = VP / (VP + FN)<br>
+<b>Tasa de VN (Especificidad)</b> = VN / (VN + FP)
+</div>
+
+Donde "casos" se refiere a cada celda de todos los indicadores de cabeza y pelvis.<br>
+<br>
+<b>AI</b> = valor del modelo IA para ese indicador<br>
+<b>Vet</b> = valor del veterinario para ese indicador
+""", unsafe_allow_html=True)
 
 # Seleccionar columnas de indicadores
 indic_cols = [c for c in df_vet.columns if c.startswith("Cabeza_") or c.startswith("Pelvis_")]
