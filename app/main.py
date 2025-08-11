@@ -14,6 +14,7 @@ from app.utils import load_data
 from sklearn.metrics import cohen_kappa_score
 import plotly.express as px
 from plotly.colors import sample_colorscale
+import plotly.graph_objects as go
 
 st.set_page_config(page_title="Análisis Motor Equino", layout="wide")
 
@@ -217,7 +218,18 @@ st.dataframe(kappa_df)
 st.markdown("Este gráfico de barras visualiza el nivel de acuerdo (Kappa de Cohen) entre el veterinario y el modelo de IA para cada parámetro de asimetría, ordenado de mayor a menor.")
 # Ordenar el DataFrame por Kappa descendente antes de graficar
 kappa_sorted = kappa_df.sort_values("Kappa", ascending=False)
-st.bar_chart(kappa_sorted["Kappa"])
+fig_kappa_sorted = go.Figure(go.Bar(
+    x=kappa_sorted.index,
+    y=kappa_sorted["Kappa"],
+    marker_color="#4682B4"
+))
+fig_kappa_sorted.update_layout(
+    xaxis_title="Parámetro",
+    yaxis_title="Kappa de Cohen",
+    title="Nivel de acuerdo (Kappa de Cohen) ordenado de mayor a menor",
+    xaxis_tickangle=-45
+)
+st.plotly_chart(fig_kappa_sorted, use_container_width=True)
 
 # Calculate Cohen's Kappa for Head and Pelvis separately
 head_cols   = [c for c in param_cols if isinstance(c, str) and c.startswith("Cabeza_")]
