@@ -221,15 +221,17 @@ kappa_sorted = kappa_df.sort_values("Kappa", ascending=False)
 fig_kappa_sorted = go.Figure(go.Bar(
     x=kappa_sorted.index,
     y=kappa_sorted["Kappa"],
-    marker_color="#4682B4"
+    marker_color="#4682B4",
+    width=0.5  # Reduce bar width for compactness
 ))
 fig_kappa_sorted.update_layout(
     xaxis_title="Parámetro",
     yaxis_title="Kappa de Cohen",
     title="Nivel de acuerdo (Kappa de Cohen) ordenado de mayor a menor",
-    xaxis_tickangle=-45
+    xaxis_tickangle=-45,
+    width=700  # Reduce overall figure width
 )
-st.plotly_chart(fig_kappa_sorted, use_container_width=True)
+st.plotly_chart(fig_kappa_sorted, use_container_width=False)
 
 # Calculate Cohen's Kappa for Head and Pelvis separately
 head_cols   = [c for c in param_cols if isinstance(c, str) and c.startswith("Cabeza_")]
