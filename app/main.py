@@ -872,29 +872,77 @@ Donde "casos" se refiere a cada celda de todos los indicadores de cabeza y pelvi
 <b>Vet</b> = valor del veterinario para ese indicador
 """, unsafe_allow_html=True)
 
+
+# Fórmulas detalladas y explicación
+st.markdown("""
+<div style='font-size:1.1em'>
+<b>Fórmulas detalladas para cada indicador:</b><br>
+Para cada indicador <b>i</b>:
+<ul>
+<li><b>VP<sub>i</sub></b> = Número de casos donde <b>AI<sub>i</sub> ≥ 1</b> y <b>Vet<sub>i</sub> ≥ 1</b></li>
+<li><b>VN<sub>i</sub></b> = Número de casos donde <b>AI<sub>i</sub> = 0</b> y <b>Vet<sub>i</sub> = 0</b></li>
+<li><b>FP<sub>i</sub></b> = Número de casos donde <b>AI<sub>i</sub> ≥ 1</b> y <b>Vet<sub>i</sub> = 0</b></li>
+<li><b>FN<sub>i</sub></b> = Número de casos donde <b>AI<sub>i</sub> = 0</b> y <b>Vet<sub>i</sub> ≥ 1</b></li>
+</ul>
+<b>Tasa de VP<sub>i</sub> (Sensibilidad)</b> = VP<sub>i</sub> / (VP<sub>i</sub> + FN<sub>i</sub>)<br>
+<b>Tasa de VN<sub>i</sub> (Especificidad)</b> = VN<sub>i</sub> / (VN<sub>i</sub> + FP<sub>i</sub>)<br>
+<br>
+Donde cada indicador se calcula por columna, es decir, por parámetro de asimetría.<br>
+</div>
+""", unsafe_allow_html=True)
+
+st.markdown("""
+<b>¿Qué muestra la siguiente tabla?</b><br>
+Para cada parámetro de asimetría (columna), se muestran los valores de VP, VN, FP, FN, la tasa de VP (sensibilidad) y la tasa de VN (especificidad), calculados individualmente.<br>
+<br>
+Esto permite analizar el desempeño del modelo AI respecto al veterinario para cada indicador específico.
+""", unsafe_allow_html=True)
+
 # Seleccionar columnas de indicadores
 indic_cols = [c for c in df_vet.columns if c.startswith("Cabeza_") or c.startswith("Pelvis_")]
 
-# Aplanar los valores
-y_true = (df_vet[indic_cols].values.flatten() >= 1).astype(int)
-y_pred = (df_model[indic_cols].values.flatten() >= 1).astype(int)
+# Calcular métricas por indicador
+per_indicator = []
+for col in indic_cols:
+    vet_col = df_vet[col]
+    ai_col = df_model[col]
+    y_true = (vet_col >= 1).astype(int)
+    y_pred = (ai_col >= 1).astype(int)
+    VP = ((y_true == 1) & (y_pred == 1)).sum()
+    VN = ((y_true == 0) & (y_pred == 0)).sum()
+    FP = ((y_true == 0) & (y_pred == 1)).sum()
+    FN = ((y_true == 1) & (y_pred == 0)).sum()
+    TPR = VP / (VP + FN) if (VP + FN) > 0 else float('nan')
+    TNR = VN / (VN + FP) if (VN + FP) > 0 else float('nan')
+    per_indicator.append({
+        "Indicador": col,
+        "VP": VP,
+        "VN": VN,
+        "FP": FP,
+        "FN": FN,
+        "Tasa VP (Sensibilidad)": TPR,
+        "Tasa VN (Especificidad)": TNR
+    })
 
-# Calcular TP, TN, FP, FN
-TP = ((y_true == 1) & (y_pred == 1)).sum()
-TN = ((y_true == 0) & (y_pred == 0)).sum()
-FP = ((y_true == 0) & (y_pred == 1)).sum()
-FN = ((y_true == 1) & (y_pred == 0)).sum()
+per_indicator_df = pd.DataFrame(per_indicator)
+st.dataframe(per_indicator_df.set_index("Indicador"))
 
-# TPR y TNR
-TPR = TP / (TP + FN) if (TP + FN) > 0 else float('nan')
-TNR = TN / (TN + FP) if (TN + FP) > 0 else float('nan')
+# Calcular métricas globales (todas las celdas)
+y_true_all = (df_vet[indic_cols].values.flatten() >= 1).astype(int)
+y_pred_all = (df_model[indic_cols].values.flatten() >= 1).astype(int)
+TP_all = ((y_true_all == 1) & (y_pred_all == 1)).sum()
+TN_all = ((y_true_all == 0) & (y_pred_all == 0)).sum()
+FP_all = ((y_true_all == 0) & (y_pred_all == 1)).sum()
+FN_all = ((y_true_all == 1) & (y_pred_all == 0)).sum()
+TPR_all = TP_all / (TP_all + FN_all) if (TP_all + FN_all) > 0 else float('nan')
+TNR_all = TN_all / (TN_all + FP_all) if (TN_all + FP_all) > 0 else float('nan')
 
 col_vp, col_vn = st.columns(2)
 with col_vp:
-    st.metric("Tasa de VP (Sensibilidad)", f"{TPR:.2%}")
-    st.markdown(f"VP: {TP}, FN: {FN}")
+    st.metric("Tasa de VP (Sensibilidad, global)", f"{TPR_all:.2%}")
+    st.markdown(f"VP: {TP_all}, FN: {FN_all}")
 with col_vn:
-    st.metric("Tasa de VN (Especificidad)", f"{TNR:.2%}")
-    st.markdown(f"VN: {TN}, FP: {FP}")
+    st.metric("Tasa de VN (Especificidad, global)", f"{TNR_all:.2%}")
+    st.markdown(f"VN: {TN_all}, FP: {FP_all}")
 
 
