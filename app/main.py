@@ -214,8 +214,10 @@ kappa_df = pd.DataFrame.from_dict(kappas, orient="index", columns=["Kappa"])
 st.markdown("Esta tabla muestra el coeficiente Kappa de Cohen para cada parámetro de asimetría, comparando la evaluación del veterinario y el modelo de IA. Un valor más alto indica mayor acuerdo entre ambos.")
 st.dataframe(kappa_df)
 
-st.markdown("Este gráfico de barras visualiza el nivel de acuerdo (Kappa de Cohen) entre el veterinario y el modelo de IA para cada parámetro de asimetría.")
-st.bar_chart(kappa_df["Kappa"])
+st.markdown("Este gráfico de barras visualiza el nivel de acuerdo (Kappa de Cohen) entre el veterinario y el modelo de IA para cada parámetro de asimetría, ordenado de mayor a menor.")
+# Ordenar el DataFrame por Kappa descendente antes de graficar
+kappa_sorted = kappa_df.sort_values("Kappa", ascending=False)
+st.bar_chart(kappa_sorted["Kappa"])
 
 # Calculate Cohen's Kappa for Head and Pelvis separately
 head_cols   = [c for c in param_cols if isinstance(c, str) and c.startswith("Cabeza_")]
