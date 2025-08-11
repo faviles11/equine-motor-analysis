@@ -836,4 +836,47 @@ with col_plot:
 
     st.plotly_chart(fig_kappa_avg, use_container_width=True)
 
+# ─────────────────────────────────────────────────────────────
+# True Positive Rate and True Negative Rate (Vet = true, AI = pred)
+
+st.markdown("---")
+st.header("Tasas de VP, VN, FP y FN (Modelo AI vs Veterinario)")
+st.markdown("""
+Se calcula la tasa de verdaderos positivos (**VP**, sensibilidad) y verdaderos negativos (**VN**, especificidad), así como los falsos positivos (**FP**) y falsos negativos (**FN**), considerando como referencia la evaluación del veterinario y como predicción la del modelo AI. Se consideran todos los indicadores de cabeza y pelvis juntos.
+
+- **Positivo:** Se considera alteración (valor ≥ 1)
+- **Negativo:** Se considera normalidad (valor = 0)
+
+**Definiciones:**
+- **VP (Verdaderos positivos):** El modelo AI detecta alteración y el veterinario también.
+- **VN (Verdaderos negativos):** El modelo AI detecta normalidad y el veterinario también.
+- **FP (Falsos positivos):** El modelo AI detecta alteración pero el veterinario no.
+- **FN (Falsos negativos):** El modelo AI detecta normalidad pero el veterinario detecta alteración.
+""")
+
+# Seleccionar columnas de indicadores
+indic_cols = [c for c in df_vet.columns if c.startswith("Cabeza_") or c.startswith("Pelvis_")]
+
+# Aplanar los valores
+y_true = (df_vet[indic_cols].values.flatten() >= 1).astype(int)
+y_pred = (df_model[indic_cols].values.flatten() >= 1).astype(int)
+
+# Calcular TP, TN, FP, FN
+TP = ((y_true == 1) & (y_pred == 1)).sum()
+TN = ((y_true == 0) & (y_pred == 0)).sum()
+FP = ((y_true == 0) & (y_pred == 1)).sum()
+FN = ((y_true == 1) & (y_pred == 0)).sum()
+
+# TPR y TNR
+TPR = TP / (TP + FN) if (TP + FN) > 0 else float('nan')
+TNR = TN / (TN + FP) if (TN + FP) > 0 else float('nan')
+
+col_vp, col_vn = st.columns(2)
+with col_vp:
+    st.metric("Tasa de VP (Sensibilidad)", f"{TPR:.2%}")
+    st.markdown(f"VP: {TP}, FN: {FN}")
+with col_vn:
+    st.metric("Tasa de VN (Especificidad)", f"{TNR:.2%}")
+    st.markdown(f"VN: {TN}, FP: {FP}")
+
 
