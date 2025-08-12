@@ -965,6 +965,7 @@ def group_sens_spec(cols):
 VP_head, VN_head, FP_head, FN_head, TPR_head, TNR_head = group_sens_spec(head_cols)
 VP_pelvis, VN_pelvis, FP_pelvis, FN_pelvis, TPR_pelvis, TNR_pelvis = group_sens_spec(pelvis_cols)
 
+
 st.markdown("""
 <b>Resumen agrupado por zona:</b><br>
 <ul>
@@ -975,6 +976,36 @@ st.markdown("""
     TPR_head, TNR_head, VP_head, VN_head, FP_head, FN_head,
     TPR_pelvis, TNR_pelvis, VP_pelvis, VN_pelvis, FP_pelvis, FN_pelvis
 ), unsafe_allow_html=True)
+
+# Gráfico de barras para comparar sensibilidad y especificidad agrupadas
+sens_spec_df = pd.DataFrame({
+    "Zona": ["Miembros Anteriores (Cabeza)", "Miembros Posteriores (Pelvis)"],
+    "Sensibilidad (Tasa VP)": [TPR_head, TPR_pelvis],
+    "Especificidad (Tasa VN)": [TNR_head, TNR_pelvis]
+})
+
+fig_sens_spec = go.Figure()
+fig_sens_spec.add_bar(
+    x=sens_spec_df["Zona"],
+    y=sens_spec_df["Sensibilidad (Tasa VP)"],
+    name="Sensibilidad (Tasa VP)",
+    marker_color="#4682B4"
+)
+fig_sens_spec.add_bar(
+    x=sens_spec_df["Zona"],
+    y=sens_spec_df["Especificidad (Tasa VN)"],
+    name="Especificidad (Tasa VN)",
+    marker_color="#228B22"
+)
+fig_sens_spec.update_layout(
+    barmode="group",
+    title="Comparación de Sensibilidad y Especificidad agrupadas por zona",
+    yaxis_title="Valor",
+    xaxis_title="Zona",
+    yaxis_tickformat=",.0%",
+    width=700
+)
+st.plotly_chart(fig_sens_spec, use_container_width=False)
 
 # Calcular métricas globales (todas las celdas)
 y_true_all = (df_vet[indic_cols].values.flatten() >= 1).astype(int)
