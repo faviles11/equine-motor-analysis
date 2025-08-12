@@ -917,6 +917,7 @@ Esto permite analizar el desempeño del modelo AI respecto al veterinario para c
 # Seleccionar columnas de indicadores
 indic_cols = [c for c in df_vet.columns if c.startswith("Cabeza_") or c.startswith("Pelvis_")]
 
+
 # Calcular métricas por indicador
 per_indicator = []
 for col in indic_cols:
@@ -942,6 +943,38 @@ for col in indic_cols:
 
 per_indicator_df = pd.DataFrame(per_indicator)
 st.dataframe(per_indicator_df.set_index("Indicador"))
+
+# Agrupar tasas por Cabeza y Pelvis
+head_cols = [c for c in indic_cols if c.startswith("Cabeza_")]
+pelvis_cols = [c for c in indic_cols if c.startswith("Pelvis_")]
+
+def group_sens_spec(cols):
+    # Agrupa los valores de VP, VN, FP, FN para el grupo dado
+    VP = VN = FP = FN = 0
+    for col in cols:
+        row = per_indicator_df[per_indicator_df["Indicador"] == col]
+        if not row.empty:
+            VP += row["VP"].values[0]
+            VN += row["VN"].values[0]
+            FP += row["FP"].values[0]
+            FN += row["FN"].values[0]
+    TPR = VP / (VP + FN) if (VP + FN) > 0 else float('nan')
+    TNR = VN / (VN + FP) if (VN + FP) > 0 else float('nan')
+    return VP, VN, FP, FN, TPR, TNR
+
+VP_head, VN_head, FP_head, FN_head, TPR_head, TNR_head = group_sens_spec(head_cols)
+VP_pelvis, VN_pelvis, FP_pelvis, FN_pelvis, TPR_pelvis, TNR_pelvis = group_sens_spec(pelvis_cols)
+
+st.markdown("""
+<b>Resumen agrupado por zona:</b><br>
+<ul>
+<li><b>Miembros Anteriores (Cabeza):</b> Tasa de VP (Sensibilidad): <b>{:.2%}</b> &nbsp;|&nbsp; Tasa de VN (Especificidad): <b>{:.2%}</b> &nbsp;|&nbsp; VP: {} &nbsp;|&nbsp; VN: {} &nbsp;|&nbsp; FP: {} &nbsp;|&nbsp; FN: {}</li>
+<li><b>Miembros Posteriores (Pelvis):</b> Tasa de VP (Sensibilidad): <b>{:.2%}</b> &nbsp;|&nbsp; Tasa de VN (Especificidad): <b>{:.2%}</b> &nbsp;|&nbsp; VP: {} &nbsp;|&nbsp; VN: {} &nbsp;|&nbsp; FP: {} &nbsp;|&nbsp; FN: {}</li>
+</ul>
+""".format(
+    TPR_head, TNR_head, VP_head, VN_head, FP_head, FN_head,
+    TPR_pelvis, TNR_pelvis, VP_pelvis, VN_pelvis, FP_pelvis, FN_pelvis
+), unsafe_allow_html=True)
 
 # Calcular métricas globales (todas las celdas)
 y_true_all = (df_vet[indic_cols].values.flatten() >= 1).astype(int)
