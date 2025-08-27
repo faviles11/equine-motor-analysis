@@ -1025,4 +1025,132 @@ with col_vn:
     st.metric("Tasa de VN (Especificidad, global)", f"{TNR_all:.2%}")
     st.markdown(f"VN: {TN_all}, FP: {FP_all}")
 
+# app.py
+# Usage: streamlit run app.py
 
+st.set_page_config(page_title="Fisher Test: MV vs SGAH", layout="wide")
+st.title("Fisher’s Exact Test — MV Total vs SGAH Total")
+
+st.markdown(
+    """
+For each row/category, we compare **MV Total** vs **SGAH Total** with a 2×2 Fisher's exact test:
+    | In Category | Not in Category |
+MV | a | b |
+SGAH | c | d |
+
+H₀: the in-category proportion is the same for MV and SGAH.
+"""
+)
+
+# -----------------------------------------------------------------------------
+# Built-in data from your tables (you can edit these numbers here if needed)
+# -----------------------------------------------------------------------------
+data_sources = {
+    "Breeds (Raza)": pd.DataFrame(
+        {
+            "Category": [
+                "Iberoamericana",
+                "Española",
+                "Cuarto de milla",
+                "Warmblood",
+                "Frisón",
+                "Criollo",
+                "Paso costarricense",
+                "Warlander",
+            ],
+            # MV Total per breed (sums to 289)
+            "MV_in": [109, 64, 41, 38, 15, 14, 8, 0],
+            # SGAH Total per breed (sums to 388)
+            "SGAH_in": [139, 103, 57, 32, 20, 20, 9, 8],
+        }
+    ),
+    "Sex (Sexo)": pd.DataFrame(
+        {
+            "Category": ["Hembras", "Machos"],
+            "MV_in": [126, 163],   # sums to 289
+            "SGAH_in": [169, 219], # sums to 388
+        }
+    ),
+}
+
+choice = st.selectbox("Choose dataset", list(data_sources.keys()))
+df_in = data_sources[choice].copy()
+
+# -----------------------------------------------------------------------------
+# Totals (from your tables). Adjust here if your overall totals change.
+# -----------------------------------------------------------------------------
+MV_total = 289
+SGAH_total = 388
+
+c1, c2 = st.columns(2)
+with c1:
+    st.metric("MV Total (overall)", MV_total)
+with c2:
+    st.metric("SGAH Total (overall)", SGAH_total)
+
+# -----------------------------------------------------------------------------
+# Compute Fisher per category
+# -----------------------------------------------------------------------------
+results = []
+for _, row in df_in.iterrows():
+    cat = row["Category"]
+    a = int(row["MV_in"])     # MV in-category
+    c = int(row["SGAH_in"])   # SGAH in-category
+    b = MV_total - a          # MV not-in-category
+    d = SGAH_total - c        # SGAH not-in-category
+
+    OR, p = fisher_exact([[a, b], [c, d]], alternative="two-sided")
+
+    results.append(
+        {
+            "Category": cat,
+            "MV_in (a)": a,
+            "MV_not (b)": b,
+            "SGAH_in (c)": c,
+            "SGAH_not (d)": d,
+            "MV % in-category": a / MV_total,
+            "SGAH % in-category": c / SGAH_total,
+            "Odds Ratio (MV/SGAH)": OR,
+            "p-value (two-sided)": p,
+        }
+    )
+
+res_df = pd.DataFrame(results)
+
+# Optional multiple-comparison control (BH/FDR)
+apply_bh = st.checkbox("Apply Benjamini–Hochberg FDR (q=0.05)", value=False)
+if apply_bh:
+    pvals = res_df["p-value (two-sided)"].values
+    m = len(pvals)
+    order = pvals.argsort()
+    ranks = order.argsort() + 1
+    bh_thresh = 0.05 * ranks / m
+    res_df["BH threshold (q=0.05)"] = bh_thresh
+    res_df["Significant (BH)"] = pvals <= bh_thresh
+
+# Pretty formatting for display
+show_df = res_df.copy()
+show_df["MV % in-category"] = (show_df["MV % in-category"] * 100).map("{:.1f}%".format)
+show_df["SGAH % in-category"] = (show_df["SGAH % in-category"] * 100).map("{:.1f}%".format)
+show_df["Odds Ratio (MV/SGAH)"] = show_df["Odds Ratio (MV/SGAH)"].map(lambda x: f"{x:.3f}")
+show_df["p-value (two-sided)"] = show_df["p-value (two-sided)"].map(lambda x: f"{x:.4g}")
+
+st.subheader("Results")
+st.dataframe(show_df, use_container_width=True)
+
+# Show contingency tables
+with st.expander("Show 2×2 contingency tables for each category"):
+    for _, r in res_df.iterrows():
+        st.markdown(
+            f"""
+**{r['Category']}**
+
+|                | In Category | Not in Category |
+|----------------|-------------|-----------------|
+| **MV**         | {int(r['MV_in (a)'])} | {int(r['MV_not (b)'])} |
+| **SGAH**       | {int(r['SGAH_in (c)'])} | {int(r['SGAH_not (d)'])} |
+
+Odds Ratio = {float(r['Odds Ratio (MV/SGAH)']):.3f}  
+p-value (two-sided) = {float(r['p-value (two-sided)']):.4g}
+"""
+        )
