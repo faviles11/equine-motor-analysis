@@ -1025,39 +1025,29 @@ with col_vn:
     st.metric("Tasa de VN (Especificidad, global)", f"{TNR_all:.2%}")
     st.markdown(f"VN: {TN_all}, FP: {FP_all}")
 
-# app.py
-# Usage: streamlit run app.py
-
 import math
-import streamlit as st
 import pandas as pd
-
-# app.py
-# Run: streamlit run app.py
-
-import math
 import streamlit as st
-import pandas as pd
 
-# ---------- Try SciPy, else fallback ----------
+# ---------- Try SciPy; if unavailable use exact pure-python fallback ----------
 try:
     from scipy.stats import fisher_exact as _scipy_fisher_exact  # type: ignore
+
     def fisher_exact_2x2(a, b, c, d):
         OR, p = _scipy_fisher_exact([[a, b], [c, d]], alternative="two-sided")
         return OR, p
-    BACKEND = "scipy"
+
 except Exception:
     def _hypergeom_pmf(N, K, n, x):
         if x < 0 or x > K or x > n or n - x > N - K:
             return 0.0
-        return (
-            math.comb(K, x) *
-            math.comb(N - K, n - x) /
-            math.comb(N, n)
-        )
+        return (math.comb(K, x) * math.comb(N - K, n - x)) / math.comb(N, n)
+
     def fisher_exact_2x2(a, b, c, d):
+        # Descriptive OR with Haldane-Anscombe correction for zeros
         ah, bh, ch, dh = a + 0.5, b + 0.5, c + 0.5, d + 0.5
         OR = (ah * dh) / (bh * ch)
+
         N = a + b + c + d
         r1 = a + b
         c1 = a + c
@@ -1070,99 +1060,124 @@ except Exception:
             if _hypergeom_pmf(N, c1, r1, x) <= p_obs + 1e-12
         )
         return OR, min(1.0, p_two)
+
     BACKEND = "pure-python"
 
-# -------------------- Streamlit UI --------------------
-st.set_page_config(page_title="Fisher Test: MV vs SGAH", layout="wide")
-st.title("Fisher’s Exact Test — MV vs SGAH Total")
-st.caption(f"Backend: **{BACKEND}**")
+# ---------------------- Streamlit UI ----------------------
+st.set_page_config(page_title="Fisher — Sexo (MV vs SGAH)", layout="wide")
+st.title("Fisher’s Exact Test — **Sexo**")
+st.caption(f"Backend estadístico: **{BACKEND}**")
 
-# -------------------- Data from your tables --------------------
-data_sources = {
-    "Breeds (Raza)": {
-        "data": pd.DataFrame({
-            "Category": [
-                "Iberoamericana", "Española", "Cuarto de milla", "Warmblood",
-                "Frisón", "Criollo", "Paso costarricense", "Warlander"
-            ],
-            "MV_in": [109, 64, 41, 38, 15, 14, 8, 0],
-            "SGAH_in": [139, 103, 57, 32, 20, 20, 9, 8],
-        }),
-        "MV_total": 289,
-        "SGAH_total": 388,
-    },
-    "Sex (Sexo)": {
-        "data": pd.DataFrame({
-            "Category": ["Hembras", "Machos"],
-            "MV_in": [126, 163],
-            "SGAH_in": [169, 219],
-        }),
-        "MV_total": 289,
-        "SGAH_total": 388,
-    },
-    "Post-flexión": {
-        "data": pd.DataFrame({
-            "Category": [
-                "Negativo (–)", "Leve positivo (+)", "Moderado positivo (++)",
-                "Severo positivo (+++)", "Disminución asimetría"
-            ],
-            "MV_in": [202, 61, 32, 22, 43],
-            "SGAH_in": [168, 74, 42, 10, 66],
-        }),
-        "MV_total": 360,
-        "SGAH_total": 360,
-    },
-}
+st.markdown(
+    """
+Se calculan **tres** pruebas por fila (Hembras, Machos), siempre como comparación **MV vs SGAH**:
 
-choice = st.selectbox("Choose dataset", list(data_sources.keys()))
-df_in = data_sources[choice]["data"].copy()
-MV_total = data_sources[choice]["MV_total"]
-SGAH_total = data_sources[choice]["SGAH_total"]
+1) **MV Total vs SGAH Total**  
+2) **MV Ant vs SGAH Ant**  
+3) **MV Post vs SGAH Post**
 
-c1, c2 = st.columns(2)
-with c1: st.metric("MV Total (overall)", MV_total)
-with c2: st.metric("SGAH Total (overall)", SGAH_total)
-
-# -------------------- Compute Fisher --------------------
-rows = []
-for _, row in df_in.iterrows():
-    cat = str(row["Category"])
-    a = int(row["MV_in"])
-    c = int(row["SGAH_in"])
-    b = MV_total - a
-    d = SGAH_total - c
-    OR, p = fisher_exact_2x2(a, b, c, d)
-    rows.append({
-        "Category": cat,
-        "MV_in (a)": a, "MV_not (b)": b,
-        "SGAH_in (c)": c, "SGAH_not (d)": d,
-        "MV %": a / MV_total, "SGAH %": c / SGAH_total,
-        "Odds Ratio": OR, "p-value": p
-    })
-res_df = pd.DataFrame(rows)
-
-# Format
-show_df = res_df.copy()
-show_df["MV %"] = (show_df["MV %"] * 100).map("{:.1f}%".format)
-show_df["SGAH %"] = (show_df["SGAH %"] * 100).map("{:.1f}%".format)
-show_df["Odds Ratio"] = show_df["Odds Ratio"].map(lambda x: "∞" if math.isinf(x) else f"{x:.3f}")
-show_df["p-value"] = show_df["p-value"].map(lambda x: f"{x:.4g}")
-
-st.subheader("Results")
-st.dataframe(show_df, use_container_width=True)
-
-with st.expander("Show contingency tables"):
-    for _, r in res_df.iterrows():
-        st.markdown(
-            f"""
-**{r['Category']}**
-
-|                | In Category | Not in Category |
-|----------------|-------------|-----------------|
-| **MV**         | {r['MV_in (a)']} | {r['MV_not (b)']} |
-| **SGAH**       | {r['SGAH_in (c)']} | {r['SGAH_not (d)']} |
-
-Odds Ratio = {r['Odds Ratio'] if isinstance(r['Odds Ratio'], str) else f"{float(r['Odds Ratio']):.3f}"}  
-p-value = {float(r['p-value']):.4g}
+El p-value con **asterisco** indica **p > 0.05**.
 """
-        )
+)
+
+# ---------------------- Datos (tabla de Sexo) ----------------------
+# Tomados de tu tabla:
+#   - MV Total / SGAH Total
+#   - MV Ant / SGAH Ant
+#   - MV Post / SGAH Post
+raw = pd.DataFrame(
+    {
+        "Sexo": ["Hembras", "Machos"],
+        "MV_total_in": [126, 163],
+        "SGAH_total_in": [169, 219],
+        "MV_ant_in": [52, 61],
+        "SGAH_ant_in": [75, 104],
+        "MV_post_in": [74, 102],
+        "SGAH_post_in": [94, 115],
+    }
+)
+
+# Totales por columna (denominadores para cada par)
+MV_total = int(raw["MV_total_in"].sum())       # 289
+SGAH_total = int(raw["SGAH_total_in"].sum())   # 388
+MV_ant_total = int(raw["MV_ant_in"].sum())     # 113
+SGAH_ant_total = int(raw["SGAH_ant_in"].sum()) # 179
+MV_post_total = int(raw["MV_post_in"].sum())   # 176
+SGAH_post_total = int(raw["SGAH_post_in"].sum()) # 209
+
+# ---------------------- Cálculo por fila ----------------------
+rows = []
+for _, r in raw.iterrows():
+    sexo = r["Sexo"]
+
+    # 1) Pair: MV Total vs SGAH Total
+    a = int(r["MV_total_in"])
+    b = MV_total - a
+    c = int(r["SGAH_total_in"])
+    d = SGAH_total - c
+    OR_tot, p_tot = fisher_exact_2x2(a, b, c, d)
+
+    # 2) Pair: MV Ant vs SGAH Ant
+    a = int(r["MV_ant_in"])
+    b = MV_ant_total - a
+    c = int(r["SGAH_ant_in"])
+    d = SGAH_ant_total - c
+    OR_ant, p_ant = fisher_exact_2x2(a, b, c, d)
+
+    # 3) Pair: MV Post vs SGAH Post
+    a = int(r["MV_post_in"])
+    b = MV_post_total - a
+    c = int(r["SGAH_post_in"])
+    d = SGAH_post_total - c
+    OR_post, p_post = fisher_exact_2x2(a, b, c, d)
+
+    rows.append(
+        {
+            "Sexo": sexo,
+            "OR (MV Total vs SGAH Total)": OR_tot,
+            "p (Total)": p_tot,
+            "OR (MV Ant vs SGAH Ant)": OR_ant,
+            "p (Ant)": p_ant,
+            "OR (MV Post vs SGAH Post)": OR_post,
+            "p (Post)": p_post,
+        }
+    )
+
+res = pd.DataFrame(rows)
+
+# ---- Formato: redondeos y asterisco si p > 0.05 ----
+def fmt_or(x):
+    if isinstance(x, str):
+        return x
+    if math.isinf(x):
+        return "∞"
+    return f"{x:.3f}"
+
+def fmt_p(x):
+    s = f"{x:.4g}"
+    if x > 0.05:
+        s += " *"
+    return s
+
+show = res.copy()
+show["OR (MV Total vs SGAH Total)"] = show["OR (MV Total vs SGAH Total)"].map(fmt_or)
+show["p (Total)"] = show["p (Total)"].map(fmt_p)
+show["OR (MV Ant vs SGAH Ant)"] = show["OR (MV Ant vs SGAH Ant)"].map(fmt_or)
+show["p (Ant)"] = show["p (Ant)"].map(fmt_p)
+show["OR (MV Post vs SGAH Post)"] = show["OR (MV Post vs SGAH Post)"].map(fmt_or)
+show["p (Post)"] = show["p (Post)"].map(fmt_p)
+
+# Reordenar para que se vea como en tu screenshot: 3 pares
+cols_order = [
+    "Sexo",
+    "OR (MV Total vs SGAH Total)", "p (Total)",
+    "OR (MV Ant vs SGAH Ant)", "p (Ant)",
+    "OR (MV Post vs SGAH Post)", "p (Post)",
+]
+show = show[cols_order]
+
+st.markdown("### Resultados (p con asterisco si > 0.05)")
+st.dataframe(show, use_container_width=True)
+
+# Nota visual
+st.caption("'*' indica **p > 0.05** (no significativo).")
