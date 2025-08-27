@@ -1066,7 +1066,6 @@ except Exception:
 # ---------------------- Streamlit UI ----------------------
 st.set_page_config(page_title="Fisher — Sexo (MV vs SGAH)", layout="wide")
 st.title("Fisher’s Exact Test — **Sexo**")
-st.caption(f"Backend estadístico: **{BACKEND}**")
 
 st.markdown(
     """
