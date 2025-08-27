@@ -1025,11 +1025,23 @@ with col_vn:
     st.metric("Tasa de VN (Especificidad, global)", f"{TNR_all:.2%}")
     st.markdown(f"VN: {TN_all}, FP: {FP_all}")
 
-import math
-import pandas as pd
-import streamlit as st
+# app.py
+# Run with: streamlit run app.py
+#
+# Shows ONLY the Fisher test results for the requested PAIRS:
+#   • (MV Total vs SGAH Total)
+#   • (MV Ant vs SGAH Ant)
+#   • (MV Post vs SGAH Post)
+# for the three tables: Raza, Sexo, y Distribución post-flexión.
+# p-values > 0.05 are marked with an asterisk "*".
+#
+# If SciPy is unavailable, a pure-Python exact implementation is used.
 
-# ---------- Try SciPy; if unavailable use exact pure-python fallback ----------
+import math
+import streamlit as st
+import pandas as pd
+
+# ---------- Fisher exact (SciPy if available; else pure-Python fallback) ----------
 try:
     from scipy.stats import fisher_exact as _scipy_fisher_exact  # type: ignore
 
@@ -1037,146 +1049,141 @@ try:
         OR, p = _scipy_fisher_exact([[a, b], [c, d]], alternative="two-sided")
         return OR, p
 
+    BACKEND = "scipy"
 except Exception:
     def _hypergeom_pmf(N, K, n, x):
         if x < 0 or x > K or x > n or n - x > N - K:
             return 0.0
-        return (math.comb(K, x) * math.comb(N - K, n - x)) / math.comb(N, n)
+        return (
+            math.comb(K, x)
+            * math.comb(N - K, n - x)
+            / math.comb(N, n)
+        )
 
     def fisher_exact_2x2(a, b, c, d):
-        # Descriptive OR with Haldane-Anscombe correction for zeros
+        # OR with Haldane-Anscombe correction for zeros (descriptive only)
         ah, bh, ch, dh = a + 0.5, b + 0.5, c + 0.5, d + 0.5
         OR = (ah * dh) / (bh * ch)
 
+        # Exact two-sided p-value under fixed margins
         N = a + b + c + d
         r1 = a + b
         c1 = a + c
         lo = max(0, r1 - (N - c1))
         hi = min(r1, c1)
         p_obs = _hypergeom_pmf(N, c1, r1, a)
-        p_two = sum(
-            _hypergeom_pmf(N, c1, r1, x)
-            for x in range(lo, hi + 1)
-            if _hypergeom_pmf(N, c1, r1, x) <= p_obs + 1e-12
-        )
+        p_two = 0.0
+        for x in range(lo, hi + 1):
+            px = _hypergeom_pmf(N, c1, r1, x)
+            if px <= p_obs + 1e-12:
+                p_two += px
         return OR, min(1.0, p_two)
 
     BACKEND = "pure-python"
 
-# ---------------------- Streamlit UI ----------------------
-st.set_page_config(page_title="Fisher — Sexo (MV vs SGAH)", layout="wide")
-st.title("Fisher’s Exact Test — **Sexo**")
+# ---------- Streamlit UI ----------
+st.set_page_config(page_title="Fisher Test — MV vs SGAH (Pairs)", layout="wide")
+st.title("Fisher’s Exact Test — MV vs SGAH (by Pairs)")
 
-st.markdown(
-    """
-Se calculan **tres** pruebas por fila (Hembras, Machos), siempre como comparación **MV vs SGAH**:
-
-1) **MV Total vs SGAH Total**  
-2) **MV Ant vs SGAH Ant**  
-3) **MV Post vs SGAH Post**
-
-El p-value con **asterisco** indica **p > 0.05**.
-"""
-)
-
-# ---------------------- Datos (tabla de Sexo) ----------------------
-# Tomados de tu tabla:
-#   - MV Total / SGAH Total
-#   - MV Ant / SGAH Ant
-#   - MV Post / SGAH Post
-raw = pd.DataFrame(
-    {
-        "Sexo": ["Hembras", "Machos"],
-        "MV_total_in": [126, 163],
-        "SGAH_total_in": [169, 219],
-        "MV_ant_in": [52, 61],
-        "SGAH_ant_in": [75, 104],
-        "MV_post_in": [74, 102],
-        "SGAH_post_in": [94, 115],
-    }
-)
-
-# Totales por columna (denominadores para cada par)
-MV_total = int(raw["MV_total_in"].sum())       # 289
-SGAH_total = int(raw["SGAH_total_in"].sum())   # 388
-MV_ant_total = int(raw["MV_ant_in"].sum())     # 113
-SGAH_ant_total = int(raw["SGAH_ant_in"].sum()) # 179
-MV_post_total = int(raw["MV_post_in"].sum())   # 176
-SGAH_post_total = int(raw["SGAH_post_in"].sum()) # 209
-
-# ---------------------- Cálculo por fila ----------------------
-rows = []
-for _, r in raw.iterrows():
-    sexo = r["Sexo"]
-
-    # 1) Pair: MV Total vs SGAH Total
-    a = int(r["MV_total_in"])
-    b = MV_total - a
-    c = int(r["SGAH_total_in"])
-    d = SGAH_total - c
-    OR_tot, p_tot = fisher_exact_2x2(a, b, c, d)
-
-    # 2) Pair: MV Ant vs SGAH Ant
-    a = int(r["MV_ant_in"])
-    b = MV_ant_total - a
-    c = int(r["SGAH_ant_in"])
-    d = SGAH_ant_total - c
-    OR_ant, p_ant = fisher_exact_2x2(a, b, c, d)
-
-    # 3) Pair: MV Post vs SGAH Post
-    a = int(r["MV_post_in"])
-    b = MV_post_total - a
-    c = int(r["SGAH_post_in"])
-    d = SGAH_post_total - c
-    OR_post, p_post = fisher_exact_2x2(a, b, c, d)
-
-    rows.append(
-        {
-            "Sexo": sexo,
-            "OR (MV Total vs SGAH Total)": OR_tot,
-            "p (Total)": p_tot,
-            "OR (MV Ant vs SGAH Ant)": OR_ant,
-            "p (Ant)": p_ant,
-            "OR (MV Post vs SGAH Post)": OR_post,
-            "p (Post)": p_post,
-        }
-    )
-
-res = pd.DataFrame(rows)
-
-# ---- Formato: redondeos y asterisco si p > 0.05 ----
-def fmt_or(x):
-    if isinstance(x, str):
-        return x
-    if math.isinf(x):
-        return "∞"
-    return f"{x:.3f}"
-
-def fmt_p(x):
-    s = f"{x:.4g}"
-    if x > 0.05:
-        s += " *"
-    return s
-
-show = res.copy()
-show["OR (MV Total vs SGAH Total)"] = show["OR (MV Total vs SGAH Total)"].map(fmt_or)
-show["p (Total)"] = show["p (Total)"].map(fmt_p)
-show["OR (MV Ant vs SGAH Ant)"] = show["OR (MV Ant vs SGAH Ant)"].map(fmt_or)
-show["p (Ant)"] = show["p (Ant)"].map(fmt_p)
-show["OR (MV Post vs SGAH Post)"] = show["OR (MV Post vs SGAH Post)"].map(fmt_or)
-show["p (Post)"] = show["p (Post)"].map(fmt_p)
-
-# Reordenar para que se vea como en tu screenshot: 3 pares
-cols_order = [
-    "Sexo",
-    "OR (MV Total vs SGAH Total)", "p (Total)",
-    "OR (MV Ant vs SGAH Ant)", "p (Ant)",
-    "OR (MV Post vs SGAH Post)", "p (Post)",
+# ---------- Data from your tables ----------
+# 1) RAZA (each row = breed). We compute Fisher per row for 3 pairs: Total, Ant, Post.
+raza_categories = [
+    "Iberoamericana", "Española", "Cuarto de milla", "Warmblood",
+    "Frisón", "Criollo", "Paso costarricense", "Warlander",
 ]
-show = show[cols_order]
+raza_pairs = {
+    "Total": {
+        "MV_in":   [109, 64, 41, 38, 15, 14, 8, 0],
+        "SGAH_in": [139,103, 57, 32, 20, 20, 9, 8],
+    },
+    "Anterior": {
+        "MV_in":   [38, 22, 18, 18, 7, 6, 4, 0],
+        "SGAH_in": [64, 42, 29, 17, 6, 8, 6, 3],
+    },
+    "Posterior": {
+        "MV_in":   [71, 42, 23, 20, 8, 8, 4, 0],
+        "SGAH_in": [75, 61, 28, 15,10,12, 3, 5],
+    },
+}
 
-st.markdown("### Resultados (p con asterisco si > 0.05)")
-st.dataframe(show, use_container_width=True)
+# 2) SEXO (each row = sex). Three pairs as well.
+sexo_categories = ["Hembras", "Machos"]
+sexo_pairs = {
+    "Total": {
+        "MV_in":   [126, 163],
+        "SGAH_in": [169, 219],
+    },
+    "Anterior": {
+        "MV_in":   [52, 61],
+        "SGAH_in": [75, 104],
+    },
+    "Posterior": {
+        "MV_in":   [74, 102],
+        "SGAH_in": [94, 115],
+    },
+}
 
-# Nota visual
-st.caption("'*' indica **p > 0.05** (no significativo).")
+# 3) DISTRIBUCIÓN POST-FLEXIÓN (one pair: MV vs SGAH; both totals = 360)
+postflex_categories = [
+    "Negativo (–)",
+    "Leve positivo (+)",
+    "Moderado positivo (++)",
+    "Severo positivo (+++)",
+    "Disminución asimetría",
+]
+postflex_pairs = {
+    "Post-flexión": {
+        "MV_in":   [202, 61, 32, 22, 43],
+        "SGAH_in": [168, 74, 42, 10, 66],
+    }
+}
+
+datasets = {
+    "Raza": (raza_categories, raza_pairs),
+    "Sexo": (sexo_categories, sexo_pairs),
+    "Distribución post-flexión": (postflex_categories, postflex_pairs),
+}
+
+dataset_name = st.selectbox("Tabla", list(datasets.keys()))
+categories, pairs = datasets[dataset_name]
+
+# ---------- Compute Fisher for each requested PAIR, per row ----------
+def format_p(p):
+    # Add "*" if p > 0.05
+    return f"{p:.4g}{'*' if p > 0.05 else ''}"
+
+# Prepare a dict of DataFrames per pair, then concat by columns
+pair_results = []
+for pair_label, counts in pairs.items():
+    mv_in = counts["MV_in"]
+    sg_in = counts["SGAH_in"]
+    if len(mv_in) != len(categories) or len(sg_in) != len(categories):
+        st.error(f"Data length mismatch in pair '{pair_label}'.")
+        st.stop()
+
+    MV_total = sum(mv_in)
+    SGAH_total = sum(sg_in)
+
+    rows = []
+    for cat, a, c in zip(categories, mv_in, sg_in):
+        a = int(a)           # MV in-category
+        c = int(c)           # SGAH in-category
+        b = MV_total - a     # MV not-in-category
+        d = SGAH_total - c   # SGAH not-in-category
+
+        OR, p = fisher_exact_2x2(a, b, c, d)
+
+        # Clean formatting
+        OR_str = "∞" if (isinstance(OR, float) and math.isinf(OR)) else f"{float(OR):.3f}"
+
+        rows.append({"Category": cat, f"{pair_label} OR": OR_str, f"{pair_label} p": format_p(float(p))})
+
+    pair_df = pd.DataFrame(rows).set_index("Category")
+    pair_results.append(pair_df)
+
+# Merge the pair results side-by-side, keeping order of categories
+final_df = pd.concat(pair_results, axis=1).reindex(categories)
+
+st.markdown("### Resultados (por pares)")
+st.dataframe(final_df, use_container_width=True)
+st.caption("Nota: * indica p > 0.05 (no significativo a α = 0.05).  Backend estadístico: " + BACKEND)
