@@ -1032,6 +1032,13 @@ import math
 import streamlit as st
 import pandas as pd
 
+# app.py
+# Run: streamlit run app.py
+
+import math
+import streamlit as st
+import pandas as pd
+
 # ---------- Try SciPy, else fallback ----------
 try:
     from scipy.stats import fisher_exact as _scipy_fisher_exact  # type: ignore
@@ -1040,116 +1047,83 @@ try:
         return OR, p
     BACKEND = "scipy"
 except Exception:
-    # Pure-Python Fisher's exact (two-sided) using hypergeometric probabilities.
-    # H0: equal proportions; margins fixed. Two-sided p-value is the sum of
-    # probabilities of all tables with probability <= P(observed).
     def _hypergeom_pmf(N, K, n, x):
-        # PMF of X~Hypergeom(N,K,n) at x: [C(K, x) * C(N-K, n-x)] / C(N, n)
         if x < 0 or x > K or x > n or n - x > N - K:
             return 0.0
         return (
-            math.comb(K, x)
-            * math.comb(N - K, n - x)
-            / math.comb(N, n)
+            math.comb(K, x) *
+            math.comb(N - K, n - x) /
+            math.comb(N, n)
         )
-
     def fisher_exact_2x2(a, b, c, d):
-        # Odds ratio with Haldane-Anscombe correction for zeros (same as adding 0.5)
-        # to avoid division-by-zero when computing the descriptive OR only.
-        # This does not affect the exact p-value which is computed from the margins.
         ah, bh, ch, dh = a + 0.5, b + 0.5, c + 0.5, d + 0.5
         OR = (ah * dh) / (bh * ch)
-
         N = a + b + c + d
         r1 = a + b
-        r2 = c + d
         c1 = a + c
-        c2 = b + d
-
-        # Support for X = cell (0,0)
-        lo = max(0, r1 - c2)
+        lo = max(0, r1 - (N - c1))
         hi = min(r1, c1)
-
-        # Observed probability
         p_obs = _hypergeom_pmf(N, c1, r1, a)
-
-        # Two-sided: sum of probabilities <= p_obs (conditional on margins)
-        p_two = 0.0
-        for x in range(lo, hi + 1):
-            px = _hypergeom_pmf(N, c1, r1, x)
-            if px <= p_obs + 1e-12:  # small epsilon for float safety
-                p_two += px
-
+        p_two = sum(
+            _hypergeom_pmf(N, c1, r1, x)
+            for x in range(lo, hi + 1)
+            if _hypergeom_pmf(N, c1, r1, x) <= p_obs + 1e-12
+        )
         return OR, min(1.0, p_two)
-
     BACKEND = "pure-python"
 
 # -------------------- Streamlit UI --------------------
 st.set_page_config(page_title="Fisher Test: MV vs SGAH", layout="wide")
-st.title("Fisher’s Exact Test — MV Total vs SGAH Total")
-
-st.caption(f"Statistical backend: **{BACKEND}**")
-
-st.markdown(
-    """
-For each row (category), we compare **MV Total** vs **SGAH Total** with a 2×2 Fisher's exact test:
-
-mathematica
-Copy code
-    | In Category | Not in Category |
-MV | a | b |
-SGAH | c | d |
-
-pgsql
-Copy code
-
-H₀: the proportion in-category is the same for MV and SGAH (two-sided).
-"""
-)
+st.title("Fisher’s Exact Test — MV vs SGAH Total")
+st.caption(f"Backend: **{BACKEND}**")
 
 # -------------------- Data from your tables --------------------
 data_sources = {
-    "Breeds (Raza)": pd.DataFrame(
-        {
+    "Breeds (Raza)": {
+        "data": pd.DataFrame({
             "Category": [
-                "Iberoamericana",
-                "Española",
-                "Cuarto de milla",
-                "Warmblood",
-                "Frisón",
-                "Criollo",
-                "Paso costarricense",
-                "Warlander",
+                "Iberoamericana", "Española", "Cuarto de milla", "Warmblood",
+                "Frisón", "Criollo", "Paso costarricense", "Warlander"
             ],
-            # MV Total per breed (sum = 289)
             "MV_in": [109, 64, 41, 38, 15, 14, 8, 0],
-            # SGAH Total per breed (sum = 388)
             "SGAH_in": [139, 103, 57, 32, 20, 20, 9, 8],
-        }
-    ),
-    "Sex (Sexo)": pd.DataFrame(
-        {
+        }),
+        "MV_total": 289,
+        "SGAH_total": 388,
+    },
+    "Sex (Sexo)": {
+        "data": pd.DataFrame({
             "Category": ["Hembras", "Machos"],
-            "MV_in": [126, 163],     # sum = 289
-            "SGAH_in": [169, 219],   # sum = 388
-        }
-    ),
+            "MV_in": [126, 163],
+            "SGAH_in": [169, 219],
+        }),
+        "MV_total": 289,
+        "SGAH_total": 388,
+    },
+    "Post-flexión": {
+        "data": pd.DataFrame({
+            "Category": [
+                "Negativo (–)", "Leve positivo (+)", "Moderado positivo (++)",
+                "Severo positivo (+++)", "Disminución asimetría"
+            ],
+            "MV_in": [202, 61, 32, 22, 43],
+            "SGAH_in": [168, 74, 42, 10, 66],
+        }),
+        "MV_total": 360,
+        "SGAH_total": 360,
+    },
 }
 
 choice = st.selectbox("Choose dataset", list(data_sources.keys()))
-df_in = data_sources[choice].copy()
-
-# Overall totals (from your tables)
-MV_total = 289
-SGAH_total = 388
+df_in = data_sources[choice]["data"].copy()
+MV_total = data_sources[choice]["MV_total"]
+SGAH_total = data_sources[choice]["SGAH_total"]
 
 c1, c2 = st.columns(2)
-with c1:
-    st.metric("MV Total (overall)", MV_total)
-with c2:
-    st.metric("SGAH Total (overall)", SGAH_total)
+with c1: st.metric("MV Total (overall)", MV_total)
+with c2: st.metric("SGAH Total (overall)", SGAH_total)
 
-# -------------------- Compute Fisher per category --------------------
+# -------------------- Compute Fisher --------------------
 rows = []
 for _, row in df_in.iterrows():
     cat = str(row["Category"])
@@ -1157,47 +1131,27 @@ for _, row in df_in.iterrows():
     c = int(row["SGAH_in"])
     b = MV_total - a
     d = SGAH_total - c
-
     OR, p = fisher_exact_2x2(a, b, c, d)
-
-    rows.append(
-        {
-            "Category": cat,
-            "MV_in (a)": a,
-            "MV_not (b)": b,
-            "SGAH_in (c)": c,
-            "SGAH_not (d)": d,
-            "MV % in-category": a / MV_total,
-            "SGAH % in-category": c / SGAH_total,
-            "Odds Ratio (MV/SGAH)": OR,
-            "p-value (two-sided)": p,
-        }
-    )
-
+    rows.append({
+        "Category": cat,
+        "MV_in (a)": a, "MV_not (b)": b,
+        "SGAH_in (c)": c, "SGAH_not (d)": d,
+        "MV %": a / MV_total, "SGAH %": c / SGAH_total,
+        "Odds Ratio": OR, "p-value": p
+    })
 res_df = pd.DataFrame(rows)
 
-# Optional BH/FDR control
-apply_bh = st.checkbox("Apply Benjamini–Hochberg FDR (q=0.05)", value=False)
-if apply_bh:
-    pvals = res_df["p-value (two-sided)"].values
-    m = len(pvals)
-    order = pvals.argsort()
-    ranks = order.argsort() + 1
-    bh = 0.05 * ranks / m
-    res_df["BH threshold (q=0.05)"] = bh
-    res_df["Significant (BH)"] = pvals <= bh
-
-# Pretty display
+# Format
 show_df = res_df.copy()
-show_df["MV % in-category"] = (show_df["MV % in-category"] * 100).map("{:.1f}%".format)
-show_df["SGAH % in-category"] = (show_df["SGAH % in-category"] * 100).map("{:.1f}%".format)
-show_df["Odds Ratio (MV/SGAH)"] = show_df["Odds Ratio (MV/SGAH)"].map(lambda x: "∞" if math.isinf(x) else f"{x:.3f}")
-show_df["p-value (two-sided)"] = show_df["p-value (two-sided)"].map(lambda x: f"{x:.4g}")
+show_df["MV %"] = (show_df["MV %"] * 100).map("{:.1f}%".format)
+show_df["SGAH %"] = (show_df["SGAH %"] * 100).map("{:.1f}%".format)
+show_df["Odds Ratio"] = show_df["Odds Ratio"].map(lambda x: "∞" if math.isinf(x) else f"{x:.3f}")
+show_df["p-value"] = show_df["p-value"].map(lambda x: f"{x:.4g}")
 
 st.subheader("Results")
 st.dataframe(show_df, use_container_width=True)
 
-with st.expander("Show 2×2 contingency tables for each category"):
+with st.expander("Show contingency tables"):
     for _, r in res_df.iterrows():
         st.markdown(
             f"""
@@ -1205,10 +1159,10 @@ with st.expander("Show 2×2 contingency tables for each category"):
 
 |                | In Category | Not in Category |
 |----------------|-------------|-----------------|
-| **MV**         | {int(r['MV_in (a)'])} | {int(r['MV_not (b)'])} |
-| **SGAH**       | {int(r['SGAH_in (c)'])} | {int(r['SGAH_not (d)'])} |
+| **MV**         | {r['MV_in (a)']} | {r['MV_not (b)']} |
+| **SGAH**       | {r['SGAH_in (c)']} | {r['SGAH_not (d)']} |
 
-Odds Ratio = {r['Odds Ratio (MV/SGAH)'] if isinstance(r['Odds Ratio (MV/SGAH)'], str) else f"{float(r['Odds Ratio (MV/SGAH)']):.3f}"}  
-p-value (two-sided) = {float(r['p-value (two-sided)']):.4g}
+Odds Ratio = {r['Odds Ratio'] if isinstance(r['Odds Ratio'], str) else f"{float(r['Odds Ratio']):.3f}"}  
+p-value = {float(r['p-value']):.4g}
 """
-)
+        )
